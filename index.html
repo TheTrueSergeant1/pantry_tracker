@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PantryFlow | Enterprise Pro Inventory</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* --- ENTERPRISE PREMIUM STYLES --- */
+        
+        :root {
+            --primary: #4f46e5; /* Indigo-600, main brand color - slightly richer than 500 */
+            --accent: #047857; /* Emerald-700, success/money - slightly richer */
+            --danger: #ef4444; /* Red-500 */
+            --warning: #fb923c; /* Orange-400 */
+        }
+        
+        /* DARK MODE - Deep Immersion (Subtle, less eye-straining) */
+        [data-theme="dark"] {
+            --bg-main: #0c0d16; /* Ultra Deep Navy/Black */
+            --bg-card: #181a29; /* Rich container background */
+            --bg-modal-content: #181a29; /* Explicitly set modal background to card color */
+            --text-main: #e0e7ff; /* Crisp light blue/white */
+            --text-secondary: #94a3b8; /* Muted slate text */
+            --border-color: #334155; /* Subtle divider (slate-700) */
+            --input-bg: #272a3e; /* Darker input background for better contrast */
+            --shadow-glow: 0 0 20px rgba(79, 70, 229, 0.4); /* Primary color glow */
+            --modal-bg: rgba(0, 0, 0, 0.85); /* Nearly opaque modal background */
+        }
+        
+        /* LIGHT MODE - Clean & Professional (High Contrast) */
+        [data-theme="light"] {
+            --bg-main: #f8fafc; /* Very light slate */
+            --bg-card: #ffffff;
+            --bg-modal-content: #ffffff;
+            --text-main: #1e293b; /* Dark slate text */
+            --text-secondary: #64748b; /* Muted gray text */
+            --border-color: #e2e8f0; /* Light border */
+            --input-bg: #f1f5f9; /* Light gray input background */
+            --shadow-glow: none;
+            --modal-bg: rgba(255, 255, 255, 0.85);
+        }
+        
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            transition: background-color 0.4s ease, color 0.4s ease; /* Faster overall transition for a snappier feel */
+            font-family: 'Inter', sans-serif;
+            overflow-y: scroll; 
+        }
+
+        /* Input/Select Consistency - IMPORTANT for both modes */
+        input:not([type="checkbox"]):not([type="radio"]), select {
+            background-color: var(--input-bg);
+            color: var(--text-main); /* Ensure high contrast text */
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        input:not([type="checkbox"]):not([type="radio"]):focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px var(--primary);
+        }
+
+        /* Premium Card Depth */
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem; /* Rounded corners for modern feel */
+            /* Subtle default shadow + a hover lift for premium feel */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05); 
+            transition: box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .card:hover {
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-4px);
+        }
+        /* Override hover for the Quick Add bar which is fixed-style */
+        #quick-add-bar:hover {
+             box-shadow: none;
+             transform: none;
+        }
+        
+        /* Tab Transitions */
+        .tab-btn {
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+            color: var(--text-secondary);
+        }
+        .tab-btn.active {
+            border-bottom-width: 4px; /* Thicker active line */
+            border-color: var(--primary);
+            color: var(--primary);
+            font-weight: 700;
+        }
+        .tab-btn:hover {
+            color: var(--primary);
+        }
+        
+        /* Smoother Tab Content Transition (Mobile-First: Absolute positioning for smooth transitions) */
+        .tab-content {
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            position: absolute; /* Ensures all tabs start at the same vertical position */
+            width: 100%;
+            top: 0;
+        }
+        .tab-content.hidden {
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            transform: translateY(10px); 
+            position: absolute; /* Maintain absolute positioning for smooth return */
+        }
+        .tab-content:not(.hidden) {
+            position: relative; /* Only active tab should take up space */
+            transform: translateY(0);
+            opacity: 1;
+            height: auto;
+        }
+
+        /* Modal Backdrop */
+        .modal-backdrop {
+            background-color: var(--modal-bg);
+            backdrop-filter: blur(12px); /* Stronger blur for modern look */
+        }
+        /* Modal Content Card */
+        #item-modal .card, #confirm-modal .card {
+             background-color: var(--bg-modal-content); /* Use a consistent background */
+             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9); /* Very high contrast shadow */
+        }
+        
+        /* Custom input file styling for cleaner look */
+        input[type="file"]::-webkit-file-upload-button {
+            border-radius: 9999px; 
+            padding: 0.5rem 1rem;
+            border: none;
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        /* Status Icon Size */
+        .status-icon-lg {
+            width: 28px;
+            height: 28px;
+            margin-right: 12px;
+        }
+
+        /* Gradient Header Text - Thicker gradient for impact */
+        .gradient-text {
+            background-image: linear-gradient(90deg, var(--primary), #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* --- ITEM CARD ENTRY ANIMATION (Popping Effect) --- */
+        @keyframes fadeInSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.98); /* Start lower and slightly smaller */
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        .item-card-entry {
+            animation: fadeInSlideUp 0.6s cubic-bezier(0.215, 0.610, 0.355, 1.000) both; /* Smoother easing function */
+        }
+        
+        /* Pulse effect for EXPIRED/Expiring Soon status */
+        @keyframes pulse-status {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .animate-pulse-status {
+            animation: pulse-status 1.5s infinite;
+        }
+        
+        /* --- FLOATING ACTION BUTTON (FAB) --- */
+        #fab-button {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 50;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 15px 30px rgba(79, 70, 229, 0.8); /* Deeper primary shadow */
+        }
+        #fab-button.hidden {
+            opacity: 0;
+            transform: scale(0.6) rotate(90deg); /* Rotate out for a better effect */
+            pointer-events: none;
+        }
+
+        /* Segmented Control Styling - MOBILE FIX (Larger buttons for tap targets) */
+        .segmented-control {
+            background-color: var(--bg-main);
+            border: 2px solid var(--primary);
+            border-radius: 16px; /* Larger radius */
+            padding: 4px; /* More padding */
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+        .segmented-btn {
+            background-color: transparent;
+            color: var(--text-secondary);
+            padding: 12px 10px; /* Increased padding for easy mobile tapping */
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            font-size: 0.9rem; /* Slightly larger font size for readability */
+        }
+        .segmented-btn.active {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 700;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.5);
+            border-radius: 12px;
+        }
+
+        /* --- FIXED HEADER/NAV STYLES --- */
+        /* Note: For fixed headers on mobile, keeping them concise is key. */
+        #main-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50; 
+            background-color: var(--bg-main);
+            /* Removed border-bottom for cleaner look, relying on shadow below */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Subtle fixed header shadow */
+            padding-left: 1rem; /* Adjust padding for mobile (p-4) */
+            padding-right: 1rem;
+            max-width: 100%;
+        }
+        /* Fixed Tabs - Positioned right below the header */
+        #main-nav {
+            position: fixed;
+            top: 76px; /* Adjust based on header height (approx 76px after reducing header padding) */
+            left: 0;
+            right: 0;
+            z-index: 40; 
+            background-color: var(--bg-main);
+            border-bottom: 1px solid var(--border-color);
+            padding-left: 1rem;
+            padding-right: 1rem;
+            max-width: 100%;
+            overflow-x: auto; /* Allow horizontal scroll on small screens if too many tabs */
+            -webkit-overflow-scrolling: touch; /* iOS scroll behavior */
+            white-space: nowrap;
+        }
+        /* Tab Container Padding fix for mobile scrolling */
+        #main-nav > .flex {
+            padding-bottom: 0; /* Remove vertical padding from the flex container */
+        }
+
+        /* Offset main content to prevent it from hiding under fixed header/nav */
+        #app-container {
+            padding-top: 135px; /* Adjusted: Header (76px) + Nav (50px) + Gap (10px) approx. */
+            max-width: 7xl;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Mobile Specific Adjustments */
+        @media (max-width: 768px) {
+             #main-header {
+                padding-left: 1rem;
+                padding-right: 1rem;
+             }
+             #main-nav {
+                padding-left: 1rem;
+                padding-right: 1rem;
+             }
+             #app-container {
+                 padding-top: 135px; 
+                 padding-left: 1rem; /* Adjust content padding for smaller screens */
+                 padding-right: 1rem;
+             }
+             .segmented-btn {
+                font-size: 0.75rem; /* Re-apply smaller font for smaller controls */
+                padding: 10px 4px;
+             }
+             .tab-btn {
+                 font-size: 1rem; /* Keep tabs legible */
+                 padding-left: 0.5rem;
+                 padding-right: 0.5rem;
+             }
+             /* Center the FAB on smaller screens for easier thumb access */
+             #fab-button {
+                 right: 50%;
+                 transform: translateX(50%);
+             }
+             #fab-button.hidden {
+                 transform: translateX(50%) scale(0.6) rotate(90deg);
+             }
+        }
+        
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#4f46e5', // Indigo-600
+                        'accent': '#047857', // Emerald-700
+                        'danger': '#ef4444', // Red-500
+                        'warning': '#fb923c', // Orange-400
+                        'deep-bg': '#0c0d16',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body data-theme="dark" class="min-h-screen">
+
+<div class="max-w-7xl mx-auto">
+    <header id="main-header" class="flex justify-between items-center py-4 transition-colors duration-500">
+        <h1 class="text-3xl font-extrabold flex items-center">
+            <i data-lucide="scan-barcode" class="mr-2 w-7 h-7 text-primary"></i> 
+            <span class="gradient-text">PantryFlow Pro</span>
+        </h1>
+        <button id="theme-toggle" class="icon-btn p-3 rounded-full text-[var(--text-secondary)] hover:text-primary hover:bg-[var(--bg-card)] transition duration-300 shadow-md">
+            <i data-lucide="sun" class="w-6 h-6 block dark:hidden"></i>
+            <i data-lucide="moon" class="w-6 h-6 hidden dark:block"></i>
+        </button>
+    </header>
+
+    <nav id="main-nav" class="transition-colors duration-500">
+        <div class="flex space-x-4">
+            <button data-tab="Pantry" class="tab-btn pb-3 px-3 active">Pantry</button>
+            <button data-tab="Fridge" class="tab-btn pb-3 px-3">Fridge</button>
+            <button data-tab="Freezer" class="tab-btn pb-3 px-3">Freezer</button>
+            <button data-tab="User" class="tab-btn pb-3 px-3 flex items-center">
+                <i data-lucide="layout-dashboard" class="w-4 h-4 mr-1"></i> Dashboard
+            </button>
+        </div>
+    </nav>
+</div>
+
+<div id="app-container" class="p-0 md:p-8"> 
+    <div id="app" class="max-w-7xl mx-auto">
+        
+        <div id="quick-add-bar" class="card p-4 rounded-xl mb-6 flex flex-col md:flex-row gap-4 items-center transition-all duration-300 border-l-4 border-primary/50">
+            <div class="flex-shrink-0 text-primary font-bold flex items-center text-lg uppercase w-full md:w-auto">
+                <i data-lucide="package-plus" class="w-5 h-5 mr-3"></i> Quick Entry
+            </div>
+            <input type="text" id="quick-add-name" placeholder="Item Name (e.g., Organic Milk)" class="quick-add-input p-3 rounded-xl flex-grow text-base">
+            <select id="quick-add-location" class="p-3 rounded-xl w-full md:w-48 text-base">
+                <option value="Fridge">Fridge</option>
+                <option value="Pantry">Pantry</option>
+                <option value="Freezer">Freezer</option>
+            </select>
+            <button onclick="quickAddItem()" class="bg-primary hover:bg-indigo-700 text-white p-3 rounded-xl flex items-center justify-center transition duration-300 w-full md:w-auto font-semibold shadow-lg shadow-primary/50">
+                <i data-lucide="plus" class="w-5 h-5 mr-1"></i> Details
+            </button>
+        </div>
+
+        <div id="warning-banner" class="hidden p-5 mb-6 rounded-xl bg-red-800/20 text-red-300 border border-red-700/50 shadow-2xl transition-all duration-500 border-l-8 border-danger">
+            <div class="font-extrabold flex items-center text-xl">
+                <i data-lucide="alert-triangle" class="w-7 h-7 mr-3 text-red-400 animate-pulse"></i> CRITICAL ALERT
+            </div>
+            <p class="text-sm mt-1 mb-3 text-red-400">The following items require immediate attention:</p>
+            <ul id="warning-list" class="space-y-1 list-disc list-inside text-sm"></ul>
+        </div>
+
+        <div id="content-wrapper" class="relative min-h-[500px] overflow-hidden">
+
+            <div id="Pantry" class="tab-content transition-all duration-500">
+                <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-6">
+                    <input type="text" id="Pantry-search" placeholder="Dynamic Search (Name/Brand)..." class="p-3 rounded-xl flex-grow text-base">
+                    <select id="Pantry-sort" class="p-3 rounded-xl w-full md:w-48 text-sm">
+                        <option value="date-asc">Best By Date Soonest</option>
+                        <option value="name-asc">A-Z Name</option>
+                        <option value="name-desc">Z-A Name</option>
+                        <option value="price-high">Price High to Low</option>
+                        <option value="price-low">Price Low to High</option>
+                    </select>
+                </div>
+                <div id="Pantry-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"> 
+                    </div>
+                <div id="Pantry-pagination" class="mt-8 flex justify-center"></div>
+            </div>
+
+            <div id="Fridge" class="tab-content hidden absolute w-full top-0 transition-all duration-500">
+                <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-6">
+                    <input type="text" id="Fridge-search" placeholder="Dynamic Search (Name/Brand)..." class="p-3 rounded-xl flex-grow text-base">
+                    <select id="Fridge-sort" class="p-3 rounded-xl w-full md:w-48 text-sm">
+                        <option value="date-asc">Best By Date Soonest</option>
+                        <option value="name-asc">A-Z Name</option>
+                        <option value="name-desc">Z-A Name</option>
+                        <option value="price-high">Price High to Low</option>
+                        <option value="price-low">Price Low to High</option>
+                    </select>
+                </div>
+                <div id="Fridge-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+                <div id="Fridge-pagination" class="mt-8 flex justify-center"></div>
+            </div>
+
+            <div id="Freezer" class="tab-content hidden absolute w-full top-0 transition-all duration-500">
+                <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-6">
+                    <input type="text" id="Freezer-search" placeholder="Dynamic Search (Name/Brand)..." class="p-3 rounded-xl flex-grow text-base">
+                    <select id="Freezer-sort" class="p-3 rounded-xl w-full md:w-48 text-sm">
+                        <option value="date-asc">Best By Date Soonest</option>
+                        <option value="name-asc">A-Z Name</option>
+                        <option value="name-desc">Z-A Name</option>
+                        <option value="price-high">Price High to Low</option>
+                        <option value="price-low">Price Low to High</option>
+                    </select>
+                </div>
+                <div id="Freezer-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+                <div id="Freezer-pagination" class="mt-8 flex justify-center"></div>
+            </div>
+
+            <div id="User" class="tab-content hidden absolute w-full top-0 transition-all duration-500">
+                <h2 class="text-3xl font-extrabold mb-8 text-primary border-b border-[var(--border-color)] pb-3 flex items-center">
+                    <i data-lucide="line-chart" class="w-7 h-7 mr-3"></i> System Dashboard & Analytics
+                </h2>
+                
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="card stat-card p-5 rounded-xl text-center shadow-lg hover:shadow-primary/70 transition-shadow duration-300 border-l-4 border-primary">
+                        <p class="text-xs uppercase font-semibold text-[var(--text-secondary)] mb-1">Total Items</p>
+                        <p class="text-3xl font-extrabold text-primary transition-colors duration-500" id="total-items">0</p>
+                    </div>
+                    <div class="card stat-card p-5 rounded-xl text-center shadow-lg hover:shadow-warning/70 transition-shadow duration-300 border-l-4 border-warning">
+                        <p class="text-xs uppercase font-semibold text-warning mb-1">Pantry Count</p>
+                        <p class="text-3xl font-extrabold text-warning transition-colors duration-500" id="pantry-count">0</p>
+                    </div>
+                    <div class="card stat-card p-5 rounded-xl text-center shadow-lg hover:shadow-primary/70 transition-shadow duration-300 border-l-4 border-sky-500">
+                        <p class="text-xs uppercase font-semibold text-sky-500 mb-1">Fridge Count</p>
+                        <p class="text-3xl font-extrabold text-sky-500 transition-colors duration-500" id="fridge-count">0</p>
+                    </div>
+                    <div class="card stat-card p-5 rounded-xl text-center shadow-lg hover:shadow-accent/70 transition-shadow duration-300 border-l-4 border-teal-500">
+                        <p class="text-xs uppercase font-semibold text-teal-500 mb-1">Freezer Count</p>
+                        <p class="text-3xl font-extrabold text-teal-500 transition-colors duration-500" id="freezer-count">0</p>
+                    </div>
+                </div>
+
+                <div class="card p-6 rounded-xl mb-8 shadow-2xl border-l-4 border-accent">
+                    <h3 class="text-xl font-bold mb-4 flex items-center border-b pb-2 border-[var(--border-color)]">
+                        <i data-lucide="wallet" class="w-5 h-5 mr-3 text-accent"></i> Financial Tracking
+                    </h3>
+                    
+                    <div class="flex justify-center mb-6">
+                        <div id="spending-period-segmented" class="segmented-control flex w-full max-w-lg shadow-inner">
+                            <button data-period="week" onclick="fetchSpendingStats('week')" class="segmented-btn flex-1 text-sm rounded-l-xl">Week</button>
+                            <button data-period="month" onclick="fetchSpendingStats('month')" class="segmented-btn flex-1 text-sm">Month</button>
+                            <button data-period="year" onclick="fetchSpendingStats('year')" class="segmented-btn flex-1 text-sm">Year</button>
+                            <button data-period="all" onclick="fetchSpendingStats('all')" class="segmented-btn flex-1 active text-sm">All Time</button>
+                            <button data-period="annual" onclick="fetchSpendingStats('annual')" class="segmented-btn flex-1 rounded-r-xl text-sm">Annual</button>
+                        </div>
+                    </div>
+
+                    <div id="spending-main-display">
+                        <div class="flex flex-col sm:flex-row justify-between items-center mb-6 p-5 bg-accent/30 rounded-xl border border-dashed border-accent">
+                            <p class="text-lg font-bold">Total Spent (<span id="spending-period-label">All Time</span>):</p>
+                            <p class="text-4xl font-extrabold text-accent" id="total-spent">$0.00</p>
+                        </div>
+                        <table class="min-w-full divide-y divide-[var(--border-color)] rounded-xl overflow-hidden">
+                            <thead class="bg-[var(--bg-main)]/50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">Location</th>
+                                    <th class="px-6 py-3 text-right text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-[var(--border-color)]" id="spending-location-table">
+                                <tr class="hover:bg-[var(--bg-card)]/50 transition duration-300">
+                                    <td class="px-6 py-4 whitespace-nowrap font-semibold text-warning">Pantry</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right font-medium" id="pantry-spent">$0.00</td>
+                                </tr>
+                                <tr class="hover:bg-[var(--bg-card)]/50 transition duration-300">
+                                    <td class="px-6 py-4 whitespace-nowrap font-semibold text-sky-500">Fridge</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right font-medium" id="fridge-spent">$0.00</td>
+                                </tr>
+                                <tr class="hover:bg-[var(--bg-card)]/50 transition duration-300">
+                                    <td class="px-6 py-4 whitespace-nowrap font-semibold text-teal-500">Freezer</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right font-medium" id="freezer-spent">$0.00</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="annual-spending-display" class="hidden">
+                        <h4 class="text-lg font-semibold mb-3">Spending Per Year</h4>
+                        <table class="min-w-full divide-y divide-[var(--border-color)] rounded-xl overflow-hidden">
+                            <thead class="bg-[var(--bg-main)]/50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">Year</th>
+                                    <th class="px-6 py-3 text-right text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">Total Spent</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-[var(--border-color)]" id="annual-spending-table">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card p-6 rounded-xl mb-8 shadow-2xl border-l-4 border-primary">
+                    <h3 class="text-xl font-bold mb-4 flex items-center border-b pb-2 border-[var(--border-color)]">
+                        <i data-lucide="trending-up" class="w-5 h-5 mr-3 text-primary"></i> Price Change Calculator
+                    </h3>
+                    
+                    <div class="space-y-4 mb-6">
+                        <select id="price-tracker-item" class="p-3 rounded-xl w-full text-sm">
+                            <option value="">Select Item to Track...</option>
+                        </select>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <input type="date" id="price-tracker-start-date" class="p-3 rounded-xl w-full text-base" title="Start Date">
+                            <input type="date" id="price-tracker-end-date" class="p-3 rounded-xl w-full text-base" title="End Date">
+                        </div>
+                        
+                        <button onclick="calculatePriceDifference()" class="w-full bg-primary hover:bg-indigo-700 text-white p-3 rounded-xl transition duration-300 font-semibold shadow-lg shadow-primary/50 flex items-center justify-center">
+                            <i data-lucide="calculator" class="w-5 h-5 mr-2"></i> Calculate Price Difference
+                        </button>
+                    </div>
+
+                    <div id="price-result-display" class="p-5 rounded-xl border border-dashed border-[var(--border-color)] text-center transition-all duration-300 min-h-[100px] flex items-center justify-center">
+                        <p id="price-result-message" class="text-base text-[var(--text-secondary)]">
+                            Select an item and two dates to see how its price has changed.
+                        </p>
+                    </div>
+                </div>
+
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="card p-6 rounded-xl shadow-2xl border-l-4 border-danger">
+                        <h3 class="text-xl font-bold mb-4 flex items-center border-b pb-2 border-[var(--border-color)]">
+                            <i data-lucide="bell-ring" class="w-5 h-5 mr-3 text-danger"></i> Urgent Notifications
+                        </h3>
+                        <div id="active-reminders" class="space-y-3">
+                            <p class="text-[var(--text-secondary)] text-sm">No active notifications.</p>
+                        </div>
+                    </div>
+
+                    <div class="card p-6 rounded-xl shadow-2xl border-l-4 border-primary">
+                        <h3 class="text-xl font-bold mb-4 flex items-center justify-between border-b pb-2 border-[var(--border-color)]">
+                            <span class="flex items-center"><i data-lucide="clock-history" class="w-5 h-5 mr-3 text-primary"></i> Closed History</span>
+                            <button onclick="clearClosedHistory()" class="text-xs text-danger hover:text-red-400 font-medium flex items-center transition duration-150 p-2 rounded-lg bg-red-900/30">
+                                <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i> Clear All
+                            </button>
+                        </h3>
+                        <div id="closed-reminders" class="space-y-3 max-h-60 overflow-y-auto pr-2">
+                            <p class="text-[var(--text-secondary)] text-sm">No recent history.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="h-20 md:h-8"></div> 
+</div>
+
+<button id="fab-button" onclick="openFormModal('Fridge', null, '')" class="hidden bg-primary text-white p-5 rounded-full shadow-lg hover:bg-indigo-700 transition duration-300">
+    <i data-lucide="plus" class="w-7 h-7"></i>
+</button>
+
+<div id="item-modal" class="hidden fixed inset-0 z-50 overflow-y-auto modal-backdrop transition-opacity duration-500">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="card w-full max-w-lg rounded-xl shadow-3xl p-6 md:p-8 relative transform transition-transform duration-500 scale-95 opacity-0">
+            <button onclick="closeFormModal()" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-danger transition duration-300">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+            <h2 id="modal-title" class="text-2xl font-bold mb-6 text-primary border-b border-[var(--border-color)] pb-2">Add New Item</h2>
+            <form id="item-form" enctype="multipart/form-data">
+                <input type="hidden" id="item-id">
+                <input type="hidden" id="item-location" name="location">
+                <input type="hidden" id="current-image-path" name="current_image_path">
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="item-name" class="block text-sm font-medium mb-1 text-[var(--text-secondary)]">Name <span class="text-danger">*</span></label>
+                        <input type="text" id="item-name" name="name" required class="w-full p-3 rounded-xl" placeholder="e.g., Cheddar Cheese">
+                    </div>
+                    <div>
+                        <label for="item-brand" class="block text-sm font-medium mb-1 text-[var(--text-secondary)]">Brand</label>
+                        <input type="text" id="item-brand" name="brand" class="w-full p-3 rounded-xl" placeholder="e.g., Kraft">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="item-purchase-date" class="block text-sm font-medium mb-1 text-[var(--text-secondary)]">Purchase Date <span class="text-danger">*</span></label>
+                        <input type="date" id="item-purchase-date" name="purchase_date" required class="w-full p-3 rounded-xl text-base">
+                    </div>
+                    <div>
+                        <label for="item-best-by-date" class="block text-sm font-medium mb-1 text-[var(--text-secondary)]">Best By Date <span class="text-danger">*</span></label>
+                        <input type="date" id="item-best-by-date" name="best_by_date" required class="w-full p-3 rounded-xl text-base">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="item-price" class="block text-sm font-medium mb-1 text-[var(--text-secondary)]">Price (USD)</label>
+                    <input type="number" id="item-price" name="price" step="0.01" value="0.00" class="w-full p-3 rounded-xl">
+                </div>
+
+                <div class="mb-6">
+                    <label for="item-image" class="block text-sm font-medium mb-2 text-[var(--text-secondary)]">Item Picture (Optional)</label>
+                    <input type="file" id="item-image" name="image" accept="image/*,.heic,.heif" class="w-full text-sm text-[var(--text-secondary)] file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-indigo-700">
+                    <div id="image-preview-container" class="mt-3 flex flex-col items-start space-y-3 hidden">
+                        <img id="image-display" src="" alt="Image Preview" class="w-32 h-32 object-cover rounded-xl shadow-lg border border-[var(--border-color)]">
+                        <button type="button" onclick="removeImage()" class="text-danger hover:text-red-400 text-sm font-medium flex items-center transition duration-150">
+                            <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i> Remove Current Image
+                        </button>
+                    </div>
+                </div>
+
+                <div id="modal-error" class="text-danger text-sm mb-4 hidden font-medium p-3 bg-red-900/30 rounded-xl border border-danger/50"></div>
+
+                <div class="flex justify-end space-x-3 pt-4 border-t border-[var(--border-color)]">
+                    <button type="button" onclick="closeFormModal()" class="px-5 py-3 border border-[var(--border-color)] rounded-xl text-[var(--text-main)] hover:bg-[var(--bg-card)]/50 transition duration-300 font-semibold">Cancel</button>
+                    <button type="submit" class="bg-primary hover:bg-indigo-700 text-white px-6 py-3 rounded-xl transition duration-300 font-semibold shadow-lg shadow-primary/50">Save Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="confirm-modal" class="hidden fixed inset-0 z-50 overflow-y-auto modal-backdrop transition-opacity duration-500">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="card w-full max-w-sm rounded-xl shadow-3xl p-6 relative transform transition-transform duration-500 scale-95 opacity-0">
+            <h3 class="text-xl font-bold mb-4 flex items-center text-danger">
+                <i data-lucide="alert-triangle" class="w-6 h-6 mr-2"></i> Confirm Action
+            </h3>
+            <p id="confirm-message" class="mb-6 text-[var(--text-main)]">Are you sure you want to proceed with this action?</p>
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeConfirmModal()" class="px-4 py-3 border border-[var(--border-color)] rounded-xl text-[var(--text-main)] hover:bg-[var(--bg-card)]/50 transition duration-300 font-semibold">Cancel</button>
+                <button id="confirm-action-btn" class="bg-danger hover:bg-red-700 text-white px-6 py-3 rounded-xl transition duration-300 font-semibold shadow-md">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Explicitly set the API base URL to the server's expected local network location.
+    const API_BASE_URL = 'http://10.0.0.100:8080';
+    let allItems = [];
+    let currentTab = 'Pantry';
+    let currentSpendingPeriod = 'all';
+
+    // --- PAGINATION STATE ---
+    const ITEMS_PER_PAGE = 15;
+    let currentPage = {
+        'Pantry': 1,
+        'Fridge': 1,
+        'Freezer': 1
+    };
+
+    // --- UTILITY FUNCTIONS (Kept from original) ---
+    function formatDate(dateString) {
+        if (!dateString) return 'N/A';
+        const datePart = dateString.split('T')[0];
+        return new Date(datePart).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    }
+    
+    function formatCurrency(amount) {
+        const numericAmount = parseFloat(amount) || 0;
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(numericAmount);
+    }
+    
+    // Parses and throws detailed error from fetch response
+    async function handleFetchError(response, customMessage = 'Failed to process request.') {
+        let errorDetail = customMessage;
+        try {
+            const result = await response.json();
+            errorDetail = result.error || customMessage;
+        } catch (e) {
+            errorDetail = `${response.statusText || 'Unknown Error'}.`;
+        }
+        const error = new Error(`${customMessage} Detail: [${response.status} ${errorDetail}]`);
+        error.status = response.status;
+        error.statusText = response.statusText;
+        throw error;
+    }
+
+    function getExpirationStatus(dateString) {
+        if (!dateString) return { text: 'N/A', color: 'text-gray-400', icon: 'clock', bg: 'bg-gray-400/20', border: 'border-gray-500/50' };
+        
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const bestBy = new Date(dateString);
+        bestBy.setHours(0, 0, 0, 0);
+        
+        const diffTime = bestBy.getTime() - today.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays < 0) {
+            // Apply pulse only to critical state
+            return { text: 'EXPIRED', color: 'text-danger', icon: 'skull', bg: 'bg-danger/20', bold: 'font-extrabold', border: 'border-danger', pulse: 'animate-pulse-status' };
+        } else if (diffDays <= 3) {
+            return { text: `Expiring in ${diffDays} day${diffDays !== 1 ? 's' : ''}`, color: 'text-warning', icon: 'alarm-check', bg: 'bg-warning/20', bold: 'font-extrabold', border: 'border-warning', pulse: 'animate-pulse-status' };
+        } else if (diffDays <= 7) {
+            return { text: `Expiring Soon`, color: 'text-warning', icon: 'calendar-check', bg: 'bg-warning/10', bold: 'font-bold', border: 'border-warning/50', pulse: '' };
+        } else {
+            return { text: 'Good to Eat', color: 'text-accent', icon: 'check-circle', bg: 'bg-accent/10', bold: 'font-bold', border: 'border-accent', pulse: '' };
+        }
+    }
+
+    // --- API CALLS (Kept from original) ---
+
+    async function fetchData() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/items`);
+            if (!response.ok) {
+                await handleFetchError(response, 'Failed to fetch items.');
+            }
+            allItems = await response.json();
+            renderAll();
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            const listElement = document.getElementById(`${currentTab}-list`);
+            const errorMessage = `Failed to load data. ${error.message}`;
+            if(listElement) {
+                listElement.innerHTML = `<p class="text-danger text-center p-8 border-2 border-dashed border-danger/50 rounded-xl mt-6">${errorMessage}</p>`;
+            }
+        }
+    }
+
+    async function deleteItem(id) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/items/${id}`, { method: 'DELETE' });
+            if (!response.ok) {
+                await handleFetchError(response, 'Failed to delete item.');
+            }
+            closeConfirmModal();
+            currentPage[currentTab] = 1; 
+            await fetchData(); 
+        } catch (error) {
+            console.error('Error deleting item:', error);
+            showModalError('item-modal', `Failed to delete item: ${error.message}`);
+        }
+    }
+
+    async function closeReminder(id) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/reminders/close/${id}`, { method: 'PUT' });
+            if (!response.ok) {
+                await handleFetchError(response, 'Failed to close reminder.');
+            }
+            await fetchData(); 
+        } catch (error) {
+            console.error('Error closing reminder:', error);
+        }
+    }
+
+    async function deleteActiveReminder(id) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/reminders/active/${id}`, { method: 'DELETE' });
+            if (!response.ok) {
+                await handleFetchError(response, 'Failed to delete active reminder.');
+            }
+            await fetchData(); 
+        } catch (error) {
+            console.error('Error deleting active reminder:', error);
+        }
+    }
+    
+    async function clearClosedHistoryConfirmed() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/reminders/closed/clear`, { method: 'DELETE' });
+            if (!response.ok) {
+                await handleFetchError(response, 'Failed to clear closed history.');
+            }
+            await fetchData(); 
+            closeConfirmModal();
+        } catch (error) {
+            console.error('Error clearing closed history:', error);
+        }
+    }
+
+
+    // --- RENDERING & UI LOGIC ---
+
+    function renderItemCard(item, index) {
+        const status = getExpirationStatus(item.best_by_date);
+        const imageUrl = item.image_path ? `${API_BASE_URL}${item.image_path}` : 'https://placehold.co/400x160/181a29/94a3b8?text=NO+IMAGE'; // Use dark mode placeholder
+        
+        const purchaseDate = item.purchase_date ? item.purchase_date.split('T')[0] : '';
+        const bestByDate = item.best_by_date ? item.best_by_date.split('T')[0] : '';
+        
+        return `
+            <div class="card item-card-entry p-5 rounded-xl flex flex-col justify-between h-full border-l-8 ${status.border}" style="animation-delay: ${index * 0.05}s;">
+                <div class="mb-4">
+                    <img src="${imageUrl}" alt="${item.name}" class="item-image mb-4 h-40 object-cover rounded-xl transition duration-500 hover:scale-[1.03] w-full" onerror="this.onerror=null;this.src='https://placehold.co/400x160/181a29/94a3b8?text=NO+IMAGE';">
+                    
+                    <div class="font-bold text-xl mb-1 truncate">${item.name}</div>
+                    <div class="text-sm text-[var(--text-secondary)]">Brand: ${item.brand || 'N/A'}</div>
+                </div>
+                
+                <div class="text-sm space-y-2 pb-4 border-b border-[var(--border-color)]">
+                    <p class="flex justify-between items-center">
+                        <span class="font-medium flex items-center text-[var(--text-secondary)]"><i data-lucide="tag" class="w-4 h-4 mr-2 text-primary"></i> Price:</span>
+                        <span class="font-extrabold text-accent">${formatCurrency(item.price)}</span>
+                    </p>
+                    <p class="flex justify-between items-center">
+                        <span class="font-medium flex items-center text-[var(--text-secondary)]"><i data-lucide="calendar-plus" class="w-4 h-4 mr-2 text-primary"></i> Purchased:</span>
+                        <span>${formatDate(purchaseDate)}</span>
+                    </p>
+                    <p class="flex justify-between items-center">
+                        <span class="font-medium flex items-center text-[var(--text-secondary)]"><i data-lucide="calendar-x" class="w-4 h-4 mr-2 text-primary"></i> Best By:</span>
+                        <span class="${status.color} ${status.bold}">${formatDate(bestByDate)}</span>
+                    </p>
+                </div>
+                
+                <div class="flex justify-start items-center pt-3 p-3 rounded-xl ${status.bg} border-l-4 ${status.border} mt-3">
+                    <i data-lucide="${status.icon}" class="status-icon-lg ${status.color} ${status.pulse}"></i> 
+                    <span class="${status.color} text-lg ${status.bold}">${status.text}</span>
+                </div>
+
+                <div class="flex space-x-3 mt-4">
+                    <button onclick="openFormModal('${item.location}', ${item.id})" class="flex-1 bg-primary/20 text-primary p-3 rounded-xl text-sm hover:bg-primary/50 transition duration-300 flex items-center justify-center font-semibold">
+                        <i data-lucide="edit-3" class="w-4 h-4 mr-1"></i> Edit
+                    </button>
+                    <button onclick="openConfirmModal('toss', ${item.id}, '${item.name}')" class="flex-1 bg-danger/20 text-danger p-3 rounded-xl text-sm hover:bg-danger/50 transition duration-300 flex items-center justify-center font-semibold">
+                        <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i> Toss
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderPagination(totalPages, location) {
+        const paginationContainer = document.getElementById(`${location}-pagination`);
+        if (!paginationContainer) return;
+
+        paginationContainer.innerHTML = '';
+        if (totalPages <= 1) return;
+
+        let paginationHtml = '';
+
+        // Previous button
+        paginationHtml += `<button onclick="changePage('${location}', ${currentPage[location] - 1})" 
+                            class="p-3 border border-[var(--border-color)] rounded-l-xl hover:bg-primary/30 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-[var(--text-main)]" 
+                            ${currentPage[location] === 1 ? 'disabled' : ''}>
+                            <i data-lucide="chevron-left" class="w-5 h-5"></i>
+                           </button>`;
+
+        // Logic for showing page buttons... 
+        let startPage = Math.max(1, currentPage[location] - 2);
+        let endPage = Math.min(totalPages, currentPage[location] + 2);
+
+        if (currentPage[location] <= 3) endPage = Math.min(totalPages, 5);
+        if (currentPage[location] > totalPages - 2) startPage = Math.max(1, totalPages - 4);
+
+        if (startPage > 1) {
+            paginationHtml += `<button onclick="changePage('${location}', 1)" class="pagination-btn px-4 py-2 border-t border-b border-[var(--border-color)] hover:bg-primary/20 transition duration-300 text-[var(--text-main)]">1</button>`;
+            if (startPage > 2) paginationHtml += `<span class="px-2 py-2 text-[var(--text-secondary)]">...</span>`;
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            paginationHtml += `<button onclick="changePage('${location}', ${i})" 
+                             class="pagination-btn px-4 py-2 border-t border-b border-[var(--border-color)] transition duration-300 ${i === currentPage[location] ? 'active bg-primary text-white font-extrabold shadow-md' : 'text-[var(--text-main)] hover:bg-primary/20' }">
+                             ${i}
+                             </button>`;
+        }
+
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) paginationHtml += `<span class="px-2 py-2 text-[var(--text-secondary)]">...</span>`;
+            paginationHtml += `<button onclick="changePage('${location}', ${totalPages})" class="pagination-btn px-4 py-2 border-t border-b border-[var(--border-color)] hover:bg-primary/20 transition duration-300 text-[var(--text-main)]">${totalPages}</button>`;
+        }
+
+        // Next button
+        paginationHtml += `<button onclick="changePage('${location}', ${currentPage[location] + 1})" 
+                            class="p-3 border border-[var(--border-color)] rounded-r-xl hover:bg-primary/30 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-[var(--text-main)]" 
+                            ${currentPage[location] === totalPages ? 'disabled' : ''}>
+                            <i data-lucide="chevron-right" class="w-5 h-5"></i>
+                           </button>`;
+
+        paginationContainer.innerHTML = `<div class="flex rounded-xl overflow-hidden shadow-lg">${paginationHtml}</div>`;
+        lucide.createIcons();
+    }
+    
+    function changePage(location, page) {
+        if (page < 1) page = 1;
+        
+        const searchInput = document.getElementById(`${location}-search`);
+        const sortSelect = document.getElementById(`${location}-sort`);
+        const search = searchInput ? searchInput.value : '';
+        const sort = sortSelect ? sortSelect.value : 'date-asc';
+        const filteredItems = sortAndFilterItems(location, search, sort);
+        const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
+
+        if (page > totalPages && totalPages > 0) page = totalPages;
+        else if (totalPages === 0) page = 1;
+
+        currentPage[location] = page;
+        renderTab(location);
+        
+        // Scroll to the top of the item list for smooth UX (below fixed headers)
+        window.scrollTo({ 
+            top: 250, // Arbitrary point below the fixed elements
+            behavior: 'smooth' 
+        });
+    }
+
+
+    function sortAndFilterItems(location, search, sort) {
+        let filtered = allItems.filter(item => item.location === location);
+
+        if (search) {
+            const lowerSearch = search.toLowerCase();
+            filtered = filtered.filter(item => 
+                item.name.toLowerCase().includes(lowerSearch) || 
+                (item.brand && item.brand.toLowerCase().includes(lowerSearch))
+            );
+        }
+
+        switch (sort) {
+            case 'name-asc':
+                filtered.sort((a, b) => a.name.localeCompare(b.name));
+                break;
+            case 'name-desc':
+                filtered.sort((a, b) => b.name.localeCompare(a.name));
+                break;
+            case 'price-high':
+                filtered.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+                break;
+            case 'price-low':
+                filtered.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+                break;
+            case 'date-asc':
+                // Sort by ascending date (closest expiration first)
+                filtered.sort((a, b) => new Date(a.best_by_date) - new Date(b.best_by_date));
+                break;
+        }
+
+        return filtered;
+    }
+
+    function renderTab(location) {
+        const searchInput = document.getElementById(`${location}-search`);
+        const sortSelect = document.getElementById(`${location}-sort`);
+        const search = searchInput ? searchInput.value : '';
+        const sort = sortSelect ? sortSelect.value : 'date-asc';
+        
+        const filteredItems = sortAndFilterItems(location, search, sort);
+        const totalItems = filteredItems.length;
+        const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+        
+        if (currentPage[location] > totalPages && totalPages > 0) {
+            currentPage[location] = totalPages;
+        } else if (totalPages === 0) {
+            currentPage[location] = 1;
+        }
+
+        const start = (currentPage[location] - 1) * ITEMS_PER_PAGE;
+        const end = start + ITEMS_PER_PAGE;
+        const itemsToRender = filteredItems.slice(start, end);
+
+        
+        const listContainer = document.getElementById(`${location}-list`);
+
+        if (!listContainer) {
+            console.error(`List container not found for ${location}. Skipping render.`);
+            return; 
+        }
+
+        if (itemsToRender.length === 0) {
+            listContainer.innerHTML = `<p class="text-center py-10 text-[var(--text-secondary)] border-dashed border-2 border-[var(--border-color)] rounded-xl mt-6">No items found in ${location}. Use the Quick Entry bar above!</p>`;
+        } else {
+            // Use index to apply staggered animation delay
+            listContainer.innerHTML = itemsToRender.map((item, index) => renderItemCard(item, index)).join('');
+        }
+        
+        renderPagination(totalPages, location);
+        
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    }
+
+    async function fetchSpendingStats(periodOverride = null) {
+        const period = periodOverride || currentSpendingPeriod;
+        currentSpendingPeriod = period;
+
+        // Update segmented control active state
+        document.querySelectorAll('#spending-period-segmented .segmented-btn').forEach(btn => {
+            if (btn.getAttribute('data-period') === period) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+        
+        const periodLabelElement = document.getElementById('spending-period-label');
+        if (periodLabelElement) {
+            const labelMap = {
+                'week': 'This Week',
+                'month': 'This Month',
+                'year': 'This Year',
+                'all': 'All Time',
+                'annual': 'Annual Summary'
+            };
+            periodLabelElement.textContent = labelMap[period] || 'All Time';
+        }
+
+
+        // Reset displays
+        document.getElementById('spending-main-display').classList.remove('hidden');
+        document.getElementById('annual-spending-display').classList.add('hidden');
+        document.getElementById('total-spent').textContent = formatCurrency(0);
+        document.getElementById('pantry-spent').textContent = formatCurrency(0);
+        document.getElementById('fridge-spent').textContent = formatCurrency(0);
+        document.getElementById('freezer-spent').textContent = formatCurrency(0);
+        document.getElementById('annual-spending-table').innerHTML = '';
+
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/stats/spending?period=${period}`);
+            if (!response.ok) {
+                await handleFetchError(response, 'Failed to fetch spending stats.');
+            }
+            const data = await response.json();
+
+            if (period === 'annual') {
+                document.getElementById('spending-main-display').classList.add('hidden');
+                document.getElementById('annual-spending-display').classList.remove('hidden');
+                
+                let annualHtml = '';
+                if (data.annualSummary && data.annualSummary.length > 0) {
+                    annualHtml = data.annualSummary.map(row => `
+                        <tr class="hover:bg-[var(--bg-card)]/50 transition duration-300">
+                            <td class="px-6 py-4 whitespace-nowrap font-semibold text-primary">${row.year}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right font-extrabold text-accent">${formatCurrency(row.total_spent)}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    annualHtml = `<tr><td colspan="2" class="px-6 py-4 text-center text-[var(--text-secondary)]">No spending data available for breakdown.</td></tr>`;
+                }
+                document.getElementById('annual-spending-table').innerHTML = annualHtml;
+            
+            } else {
+                document.getElementById('spending-main-display').classList.remove('hidden');
+                document.getElementById('annual-spending-display').classList.add('hidden');
+
+                document.getElementById('total-spent').textContent = formatCurrency(data.totalSpent);
+                document.getElementById('pantry-spent').textContent = formatCurrency(data.pantrySpent);
+                document.getElementById('fridge-spent').textContent = formatCurrency(data.fridgeSpent);
+                document.getElementById('freezer-spent').textContent = formatCurrency(data.freezerSpent);
+            }
+
+        } catch (error) {
+            console.error('Error fetching spending stats:', error);
+             document.getElementById('total-spent').textContent = `Error: ${error.status || '500'}`;
+        }
+    }
+
+    // --- NEW PRICE DIFFERENCE CALCULATOR LOGIC (Kept from original) ---
+    let uniqueItems = [];
+
+    async function fetchUniqueItemsForTracker() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/price-tracker/unique-items`);
+            if (!response.ok) {
+                await handleFetchError(response, 'Failed to fetch unique items.');
+            }
+            uniqueItems = await response.json();
+            
+            const select = document.getElementById('price-tracker-item');
+
+            select.innerHTML = '<option value="">Select Item to Track...</option>';
+            
+            uniqueItems.forEach(item => {
+                const brandLabel = item.item_brand ? `(${item.item_brand})` : '(No Brand)';
+                const label = `${item.item_name} ${brandLabel}`;
+                // Use JSON string as value to easily pass name and brand (including null) to API
+                const value = JSON.stringify({ name: item.item_name, brand: item.item_brand });
+                
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = label;
+                select.appendChild(option);
+            });
+            
+        } catch (error) {
+            console.error('Error loading unique items:', error);
+            document.getElementById('price-result-message').textContent = `Error loading item list. Detail: ${error.message}`;
+        }
+    }
+    
+    function setPriceResultDisplay(message, isError = false) {
+        const display = document.getElementById('price-result-display');
+        const messageElement = document.getElementById('price-result-message');
+        
+        if (isError) {
+            display.className = 'p-5 rounded-xl border border-dashed border-danger bg-danger/20 text-center transition-all duration-300 min-h-[100px] flex items-center justify-center';
+            messageElement.className = 'text-base font-medium text-danger';
+        } else if (message.includes('increase') || message.includes('decrease')) {
+            const isIncrease = message.includes('increase');
+             display.className = `p-5 rounded-xl border border-dashed ${isIncrease ? 'border-danger bg-danger/20' : 'border-accent bg-accent/20'} text-center transition-all duration-300 min-h-[100px] flex items-center justify-center`;
+             messageElement.className = `text-xl font-extrabold ${isIncrease ? 'text-danger' : 'text-accent'}`;
+        }
+        else {
+             display.className = 'p-5 rounded-xl border border-dashed border-[var(--border-color)] text-center transition-all duration-300 min-h-[100px] flex items-center justify-center';
+             messageElement.className = 'text-base text-[var(--text-secondary)]';
+        }
+        
+        messageElement.innerHTML = message;
+        lucide.createIcons();
+    }
+
+
+    async function calculatePriceDifference() {
+        const select = document.getElementById('price-tracker-item');
+        const startDateInput = document.getElementById('price-tracker-start-date');
+        const endDateInput = document.getElementById('price-tracker-end-date');
+        
+        const itemKeyString = select.value;
+        const startDate = startDateInput.value;
+        const endDate = endDateInput.value;
+
+        if (!itemKeyString || !startDate || !endDate) {
+            return setPriceResultDisplay("Please select an item, a start date, and an end date.", true);
+        }
+        
+        if (new Date(startDate) >= new Date(endDate)) {
+            return setPriceResultDisplay("The start date must be before the end date.", true);
+        }
+
+        let itemKey;
+        try {
+            itemKey = JSON.parse(itemKeyString);
+        } catch (e) {
+            return setPriceResultDisplay("Invalid item selection.", true);
+        }
+
+        setPriceResultDisplay('Calculating price change...');
+
+        try {
+            const url = `${API_BASE_URL}/api/price-tracker/difference?name=${encodeURIComponent(itemKey.name)}&brand=${encodeURIComponent(itemKey.brand)}&startDate=${startDate}&endDate=${endDate}`;
+            
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                 const errorObj = await response.json().catch(() => ({ error: response.statusText }));
+                 throw new Error(errorObj.error);
+            }
+            
+            const result = await response.json();
+            
+            const diff = result.difference;
+            const absDiff = Math.abs(diff);
+            
+            let message = '';
+            
+            if (diff > 0) {
+                // Price increase
+                message = `
+                    <div class="text-4xl">${formatCurrency(absDiff)} <i data-lucide="arrow-up-right" class="w-8 h-8 inline-block"></i></div>
+                    <p class="mt-2 text-lg">Price **increased** by ${formatCurrency(absDiff)}</p>
+                    <p class="text-sm font-normal text-[var(--text-secondary)]">
+                        (${formatCurrency(result.startPrice)} on ${formatDate(result.startDate)} to ${formatCurrency(result.endPrice)} on ${formatDate(result.endDate)}).
+                    </p>
+                `;
+            } else if (diff < 0) {
+                // Price decrease
+                message = `
+                    <div class="text-4xl">${formatCurrency(absDiff)} <i data-lucide="arrow-down-right" class="w-8 h-8 inline-block"></i></div>
+                    <p class="mt-2 text-lg">Price **decreased** by ${formatCurrency(absDiff)}</p>
+                    <p class="text-sm font-normal text-[var(--text-secondary)]">
+                        (${formatCurrency(result.startPrice)} on ${formatDate(result.startDate)} to ${formatCurrency(result.endPrice)} on ${formatDate(result.endDate)}).
+                    </p>
+                `;
+            } else {
+                // Price stayed the same
+                message = `
+                    <div class="text-4xl text-primary">0.00 <i data-lucide="minus" class="w-8 h-8 inline-block"></i></div>
+                    <p class="mt-2 text-lg">Price **remained stable**.</p>
+                    <p class="text-sm font-normal text-[var(--text-secondary)]">
+                        (Price was ${formatCurrency(result.startPrice)} on both dates).
+                    </p>
+                `;
+            }
+
+            setPriceResultDisplay(message, false);
+
+        } catch (error) {
+            console.error('Calculation Error:', error);
+            setPriceResultDisplay(`Error: ${error.message}`, true);
+        }
+    }
+
+    function renderDashboard() {
+        // Run spending stats load with current filter
+        fetchSpendingStats(currentSpendingPeriod);
+        fetchUniqueItemsForTracker(); // Load items for the new tracker dropdowns
+
+        // Set default dates for the calculator to today and 30 days ago
+        const today = new Date().toISOString().split('T')[0];
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        
+        document.getElementById('price-tracker-start-date').value = thirtyDaysAgo.toISOString().split('T')[0];
+        document.getElementById('price-tracker-end-date').value = today;
+
+        const counts = allItems.reduce((acc, item) => {
+            acc[item.location.toLowerCase() + 'Count'] = (acc[item.location.toLowerCase() + 'Count'] || 0) + 1;
+            acc.totalItems = (acc.totalItems || 0) + 1;
+            return acc;
+        }, { pantryCount: 0, fridgeCount: 0, freezerCount: 0, totalItems: 0 });
+
+        // Update counts
+        document.getElementById('total-items').textContent = counts.totalItems;
+        document.getElementById('pantry-count').textContent = counts.pantryCount;
+        document.getElementById('fridge-count').textContent = counts.fridgeCount;
+        document.getElementById('freezer-count').textContent = counts.freezerCount;
+
+
+        // Render warnings
+        const expiringItems = allItems.filter(item => {
+            const status = getExpirationStatus(item.best_by_date);
+            return status.icon !== 'check-circle' && status.icon !== 'clock';
+        }).sort((a, b) => new Date(a.best_by_date) - new Date(b.best_by_date)); 
+
+        const warningList = document.getElementById('warning-list');
+        const warningBanner = document.getElementById('warning-banner');
+
+        if (expiringItems.length > 0) {
+            warningBanner.classList.remove('hidden');
+            warningList.innerHTML = expiringItems.slice(0, 5).map(item => { 
+                const status = getExpirationStatus(item.best_by_date);
+                return `<li><span class="font-bold">${item.name}</span> (${item.location}) - ${status.text}</li>`;
+            }).join('');
+            if (expiringItems.length > 5) {
+                warningList.innerHTML += `<li class="font-medium">...and ${expiringItems.length - 5} more items.</li>`;
+            }
+
+        } else {
+            warningBanner.classList.add('hidden');
+            warningList.innerHTML = '';
+        }
+
+        // Fetch and render reminders
+        fetch(`${API_BASE_URL}/api/reminders`)
+            .then(res => res.json())
+            .then(data => {
+                const activeHtml = data.active.length > 0
+                    ? data.active.map(r => `
+                        <div class="flex items-center justify-between p-3 border border-red-800 rounded-xl bg-red-900/50 hover:bg-red-900/70 transition duration-300">
+                            <span class="text-sm font-medium mr-4">${r.message}</span>
+                            <div class="flex-shrink-0 space-x-2">
+                                <button onclick="deleteActiveReminder(${r.id})" title="Delete Notification" class="text-xs text-gray-400 hover:text-danger transition p-2 rounded-full bg-gray-700/50 hover:bg-danger/50">
+                                    <i data-lucide="x" class="w-4 h-4"></i>
+                                </button>
+                                <button onclick="closeReminder(${r.id})" title="Mark as Closed" class="text-xs text-primary hover:text-blue-400 transition p-2 rounded-full bg-gray-700/50 hover:bg-primary/50">
+                                    <i data-lucide="check" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')
+                    : '<p class="text-[var(--text-secondary)] text-sm">No urgent notifications.</p>';
+                
+                const closedHtml = data.closed.length > 0
+                    ? data.closed.map(r => `
+                        <div class="text-xs text-[var(--text-secondary)] p-2 border-b border-[var(--border-color)] hover:bg-[var(--bg-card)]/50 transition duration-300 flex justify-between">
+                            <span class="font-medium truncate">${r.message}</span> 
+                            <span class="flex-shrink-0 ml-2">${formatDate(r.created_at)}</span>
+                        </div>
+                    `).join('')
+                    : '<p class="text-[var(--text-secondary)] text-sm">No recent history.</p>';
+
+                document.getElementById('active-reminders').innerHTML = activeHtml;
+                document.getElementById('closed-reminders').innerHTML = closedHtml;
+                lucide.createIcons(); // Re-render icons
+            })
+            .catch(err => {
+                console.error("Error fetching reminders:", err);
+                document.getElementById('active-reminders').innerHTML = '<p class="text-danger text-sm">Failed to load reminders.</p>';
+            });
+    }
+
+    function renderAll() {
+        // Reset position of hidden tabs
+        document.getElementById('Fridge').style.transform = 'translateY(0)';
+        document.getElementById('Freezer').style.transform = 'translateY(0)';
+        document.getElementById('User').style.transform = 'translateY(0)';
+        
+        if (currentTab === 'User') {
+            renderDashboard();
+            document.getElementById('fab-button').classList.add('hidden'); // Hide FAB on Dashboard
+        } else {
+            renderTab(currentTab);
+            updateFabVisibility(); // Check FAB visibility on inventory tabs
+        }
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    }
+
+
+    // --- MODAL & FORM LOGIC (Kept from original) ---
+
+    function showModalError(modalId, message) {
+        const errorDiv = document.getElementById('modal-error');
+        if (errorDiv) {
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('hidden');
+        }
+    }
+    
+    function hideModalError(modalId) {
+        const errorDiv = document.getElementById('modal-error');
+        if (errorDiv) {
+            errorDiv.classList.add('hidden');
+            errorDiv.textContent = '';
+        }
+    }
+
+    function openFormModal(location, itemId = null, itemName = '') {
+        const modal = document.getElementById('item-modal');
+        const modalCard = modal.querySelector('.card');
+        const form = document.getElementById('item-form');
+        form.reset();
+        hideModalError();
+        
+        // Reset image preview
+        document.getElementById('item-image').value = null;
+        document.getElementById('current-image-path').value = '';
+        document.getElementById('image-preview-container').classList.add('hidden');
+
+        // Set location (hidden field)
+        document.getElementById('item-location').value = location;
+        document.getElementById('modal-title').textContent = itemId ? `Edit Item in ${location}` : `Add New Item to ${location}`;
+        document.getElementById('item-id').value = itemId || '';
+        document.getElementById('item-price').value = '0.00'; 
+        
+        document.getElementById('item-name').value = itemName;
+        
+        if (!itemId) {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('item-purchase-date').value = today;
+        }
+
+        if (itemId) {
+            const item = allItems.find(i => i.id === itemId);
+            if (item) {
+                document.getElementById('item-name').value = item.name;
+                document.getElementById('item-brand').value = item.brand || '';
+                document.getElementById('item-purchase-date').value = item.purchase_date.split('T')[0];
+                document.getElementById('item-best-by-date').value = item.best_by_date.split('T')[0];
+                document.getElementById('item-price').value = parseFloat(item.price).toFixed(2);
+                
+                if (item.image_path) {
+                    document.getElementById('current-image-path').value = item.image_path;
+                    document.getElementById('image-display').src = `${API_BASE_URL}${item.image_path}`;
+                    document.getElementById('image-preview-container').classList.remove('hidden');
+                }
+            } else {
+                console.error(`Item with ID ${itemId} not found in the local cache.`);
+            }
+        }
+
+        modal.classList.remove('hidden');
+        // Buttery smooth transition in
+        setTimeout(() => {
+            modal.style.opacity = 1;
+            modalCard.style.transform = 'scale(1)';
+            modalCard.style.opacity = 1;
+        }, 10);
+        
+        if (typeof lucide !== 'undefined') { lucide.createIcons(); }
+    }
+    
+    function quickAddItem() {
+        const nameInput = document.getElementById('quick-add-name');
+        const locationSelect = document.getElementById('quick-add-location');
+        const name = nameInput.value.trim();
+        const location = locationSelect.value;
+        
+        if (name) {
+            openFormModal(location, null, name);
+            
+            nameInput.value = ''; 
+            nameInput.classList.remove('border-danger', 'ring-danger', 'ring-2');
+
+            // Find the correct tab button and trigger the click event
+            const tabButton = document.querySelector(`.tab-btn[data-tab="${location}"]`);
+            if (tabButton) tabButton.click();
+
+        } else {
+            // Visual feedback for required field
+            nameInput.classList.add('border-danger', 'ring-danger', 'ring-2');
+            setTimeout(() => nameInput.classList.remove('border-danger', 'ring-danger', 'ring-2'), 1500);
+        }
+    }
+
+
+    function closeFormModal() {
+        const modal = document.getElementById('item-modal');
+        const modalCard = modal.querySelector('.card');
+        
+        // Buttery smooth transition out
+        modal.style.opacity = 0;
+        modalCard.style.transform = 'scale(0.95)';
+        modalCard.style.opacity = 0;
+        
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            // Reset to ensure a clean slate for the next open
+            modalCard.style.transform = 'scale(0.95)'; 
+            modalCard.style.opacity = 0;
+        }, 500); 
+        
+        hideModalError();
+    }
+
+    function openConfirmModal(type, itemId = null, itemName = null) {
+        const modal = document.getElementById('confirm-modal');
+        const confirmBtn = document.getElementById('confirm-action-btn');
+        const message = document.getElementById('confirm-message');
+        const modalTitle = modal.querySelector('h3');
+
+        if (type === 'toss') {
+            message.textContent = `Are you sure you want to toss out "${itemName}"? This action cannot be undone.`;
+            modalTitle.innerHTML = `<i data-lucide="alert-triangle" class="w-6 h-6 mr-2"></i> Confirm Deletion`;
+            confirmBtn.textContent = "Toss Out";
+            confirmBtn.onclick = () => deleteItem(itemId);
+
+        } else if (type === 'clear_history') {
+            message.textContent = `Are you sure you want to clear ALL closed notification history? This action cannot be reversed.`;
+            modalTitle.innerHTML = `<i data-lucide="trash-2" class="w-6 h-6 mr-2"></i> Clear History`;
+            confirmBtn.textContent = "Clear All";
+            confirmBtn.onclick = clearClosedHistoryConfirmed;
+        }
+
+        modal.classList.remove('hidden');
+        // Smooth transition in
+        setTimeout(() => {
+            modal.style.opacity = 1;
+            modal.querySelector('.card').style.transform = 'scale(1)';
+            modal.querySelector('.card').style.opacity = 1;
+        }, 10);
+        
+        if (typeof lucide !== 'undefined') { lucide.createIcons(); }
+    }
+
+    function closeConfirmModal() {
+        const modal = document.getElementById('confirm-modal');
+        const modalCard = modal.querySelector('.card');
+        
+        // Smooth transition out
+        modal.style.opacity = 0;
+        modalCard.style.transform = 'scale(0.95)';
+        modalCard.style.opacity = 0;
+
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            // Reset to ensure a clean slate for the next open
+            modalCard.style.transform = 'scale(0.95)';
+            modalCard.style.opacity = 0;
+        }, 500);
+    }
+
+    function clearClosedHistory() {
+        openConfirmModal('clear_history');
+    }
+
+    function removeImage() {
+        document.getElementById('item-image').value = null;
+        document.getElementById('current-image-path').value = 'DELETE_FLAG'; // Flag for backend
+        document.getElementById('image-display').src = '';
+        document.getElementById('image-preview-container').classList.add('hidden');
+    }
+
+    // --- FAB (Floating Action Button) Logic ---
+    const fabButton = document.getElementById('fab-button');
+    const quickAddBar = document.getElementById('quick-add-bar');
+
+    function updateFabVisibility() {
+        if (!quickAddBar || !fabButton) return;
+        
+        const barBottomY = quickAddBar.getBoundingClientRect().bottom;
+
+        // The FAB should be hidden if the tab is 'User' or if the Quick Add bar is visible near the top (below the fixed nav, approx 135px)
+        if (currentTab === 'User' || barBottomY > 150) { 
+            fabButton.classList.add('hidden');
+        } else {
+            // FAB appears when the user scrolls past the Quick Entry bar
+            fabButton.classList.remove('hidden');
+            fabButton.onclick = () => openFormModal(currentTab, null, '');
+        }
+    }
+
+    // --- EVENT HANDLERS (Adjusted for new class names/styles) ---
+
+    document.getElementById('item-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        hideModalError();
+
+        const form = e.target;
+        const itemId = document.getElementById('item-id').value;
+        const isEditing = !!itemId;
+        
+        // Custom validation check
+        const name = document.getElementById('item-name').value.trim();
+        const bestByDate = document.getElementById('item-best-by-date').value;
+        if (!name) {
+            return showModalError('item-modal', 'Item Name is required.');
+        }
+        if (!bestByDate) {
+            return showModalError('item-modal', 'Best By Date is required.');
+        }
+
+        const formData = new FormData(form);
+        
+        // Simplified image handling logic for PUT request
+        if (isEditing) {
+            // If user explicitly chose to remove, or uploaded a new file
+            const newImageFile = formData.get('image');
+            const deleteFlag = formData.get('current_image_path') === 'DELETE_FLAG';
+
+            if (newImageFile && newImageFile.name) {
+                // Keep the new file
+                formData.delete('current_image_path');
+            } else if (deleteFlag) {
+                // No new file, but deletion requested - keep DELETE_FLAG
+                formData.delete('image'); // Remove empty file input
+            } else {
+                // No change to image - remove both file and flag/path to simplify backend
+                formData.delete('image');
+                formData.delete('current_image_path');
+            }
+        }
+
+
+        const url = isEditing ? `${API_BASE_URL}/api/items/${itemId}` : `${API_BASE_URL}/api/items`;
+        const method = isEditing ? 'PUT' : 'POST';
+
+        try {
+            const response = await fetch(url, {
+                method: method,
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                closeFormModal();
+                await fetchData(); 
+            } else {
+                showModalError('item-modal', result.error || 'An unexpected error occurred.');
+            }
+        } catch (error) {
+            console.error('Submission error:', error);
+            showModalError('item-modal', 'Network error. Could not connect to the server.');
+        }
+    });
+
+    // --- INITIALIZATION ---
+    window.onload = function() {
+        
+        // Apply saved theme on load 
+        const savedTheme = localStorage.getItem('theme') || 'dark'; 
+        document.body.setAttribute('data-theme', savedTheme);
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark');
+        }
+
+        // Theme toggle listener
+        const themeToggle = document.getElementById('theme-toggle');
+        if (themeToggle) {
+             themeToggle.addEventListener('click', () => {
+                 const body = document.body;
+                 const currentTheme = body.getAttribute('data-theme');
+                 const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                 body.setAttribute('data-theme', newTheme);
+                 body.classList.toggle('dark', newTheme === 'dark');
+                 localStorage.setItem('theme', newTheme);
+                 lucide.createIcons();
+             });
+        }
+
+        // Tab event listeners
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const newTab = e.target.getAttribute('data-tab');
+                if (newTab === currentTab) return;
+
+                const activeTabButton = document.querySelector('.tab-btn.active');
+                if (activeTabButton) activeTabButton.classList.remove('active');
+                e.target.classList.add('active');
+                
+                // --- START FIX ---
+                const quickAddBar = document.getElementById('quick-add-bar');
+                if (quickAddBar) {
+                    if (newTab === 'User') {
+                        // Hide Quick Add bar on Dashboard
+                        quickAddBar.classList.add('hidden');
+                    } else {
+                        // Show Quick Add bar on all inventory tabs
+                        quickAddBar.classList.remove('hidden');
+                    }
+                }
+                
+                // Smooth transition logic
+                const allTabContents = document.querySelectorAll('.tab-content');
+                allTabContents.forEach(content => {
+                    // Start fade out and slide up on non-active tabs
+                    if (content.id !== newTab) {
+                        content.style.opacity = 0;
+                        content.style.transform = 'translateY(15px)';
+                        // Use a timeout slightly shorter than the transition duration to add 'hidden'
+                        setTimeout(() => content.classList.add('hidden'), 350); 
+                    }
+                });
+
+                const newTabContent = document.getElementById(newTab);
+                if (newTabContent) {
+                    newTabContent.classList.remove('hidden');
+                    // Ensure it's in the correct position for the slide-in animation to work
+                    newTabContent.style.opacity = 0;
+                    newTabContent.style.transform = 'translateY(15px)';
+
+                    // Force reflow/re-render before starting the animation
+                    newTabContent.offsetHeight; 
+                    
+                    // Start fade in and slide down smoothly
+                    setTimeout(() => {
+                        newTabContent.style.opacity = 1;
+                        newTabContent.style.transform = 'translateY(0)';
+                    }, 50); // Small delay before animating in
+                }
+                
+                currentTab = newTab;
+                currentPage[currentTab] = 1; 
+                renderAll();
+            });
+        });
+        
+        // Spending Segmented Control Initialization
+        document.querySelectorAll('#spending-period-segmented .segmented-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const period = e.target.getAttribute('data-period');
+                fetchSpendingStats(period);
+            });
+        });
+
+        // Search and sort listeners
+        ['Pantry', 'Fridge', 'Freezer'].forEach(location => {
+            const searchInput = document.getElementById(`${location}-search`);
+            const sortSelect = document.getElementById(`${location}-sort`);
+            
+            if (searchInput) {
+                searchInput.addEventListener('input', () => {
+                    currentPage[location] = 1;
+                    renderTab(location);
+                });
+            }
+            if (sortSelect) {
+                sortSelect.addEventListener('change', () => {
+                    currentPage[location] = 1;
+                    renderTab(location);
+                });
+            }
+        });
+
+        // Global scroll listener for the FAB
+        window.addEventListener('scroll', updateFabVisibility);
+
+
+        lucide.createIcons();
+        fetchData();
+        
+        const today = new Date().toISOString().split('T')[0];
+        const purchaseDateInput = document.getElementById('item-purchase-date');
+        if (purchaseDateInput) purchaseDateInput.value = today;
+    };
+
+</script>
+</body> 
+</html>
