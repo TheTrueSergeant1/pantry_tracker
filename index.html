@@ -11,28 +11,28 @@
         /* --- ENTERPRISE PREMIUM STYLES --- */
         
         :root {
-            --primary: #4f46e5; /* Indigo-600, main brand color - slightly richer than 500 */
-            --accent: #047857; /* Emerald-700, success/money - slightly richer */
-            --danger: #ef4444; /* Red-500 */
-            --warning: #fb923c; /* Orange-400 */
+            --primary: #5c6bc0; /* Cooler Indigo-400/500 mix for a modern Apple feel */
+            --accent: #00897b; /* Teal/Mint Green for a fresh success/money color */
+            --danger: #ef5350; /* Softer Red-500/600 */
+            --warning: #ffb300; /* Amber-500/600 */
         }
         
         /* DARK MODE - Deep Immersion (Subtle, less eye-straining) */
         [data-theme="dark"] {
             --bg-main: #0c0d16; /* Ultra Deep Navy/Black */
-            --bg-card: #181a29; /* Rich container background */
-            --bg-modal-content: #181a29; /* Explicitly set modal background to card color */
+            --bg-card: #1e2137; /* Rich container background, slightly purplish-dark-blue */
+            --bg-modal-content: #272a41; /* Deeper modal content for contrast against backdrop */
             --text-main: #e0e7ff; /* Crisp light blue/white */
             --text-secondary: #94a3b8; /* Muted slate text */
-            --border-color: #334155; /* Subtle divider (slate-700) */
-            --input-bg: #272a3e; /* Darker input background for better contrast */
-            --shadow-glow: 0 0 20px rgba(79, 70, 229, 0.4); /* Primary color glow */
-            --modal-bg: rgba(0, 0, 0, 0.85); /* Nearly opaque modal background */
+            --border-color: #3f4762; /* Subtle divider */
+            --input-bg: #131525; /* Darker input background for better contrast */
+            --shadow-glow: 0 0 20px rgba(92, 107, 192, 0.4); /* Primary color glow */
+            --modal-bg: rgba(0, 0, 0, 0.7); /* Translucent backdrop */
         }
         
         /* LIGHT MODE - Clean & Professional (High Contrast) */
         [data-theme="light"] {
-            --bg-main: #f8fafc; /* Very light slate */
+            --bg-main: #f4f6fa; /* Very light cool gray */
             --bg-card: #ffffff;
             --bg-modal-content: #ffffff;
             --text-main: #1e293b; /* Dark slate text */
@@ -40,69 +40,76 @@
             --border-color: #e2e8f0; /* Light border */
             --input-bg: #f1f5f9; /* Light gray input background */
             --shadow-glow: none;
-            --modal-bg: rgba(255, 255, 255, 0.85);
+            --modal-bg: rgba(255, 255, 255, 0.7);
         }
         
         body {
             background-color: var(--bg-main);
             color: var(--text-main);
-            transition: background-color 0.4s ease, color 0.4s ease; /* Faster overall transition for a snappier feel */
+            transition: background-color 0.5s ease, color 0.5s ease;
             font-family: 'Inter', sans-serif;
-            overflow-y: scroll; 
+            overflow-y: scroll;
         }
 
-        /* Input/Select Consistency - IMPORTANT for both modes */
+        /* Bubbly Input/Select Styling */
         input:not([type="checkbox"]):not([type="radio"]), select {
             background-color: var(--input-bg);
-            color: var(--text-main); /* Ensure high contrast text */
+            color: var(--text-main);
             border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
+            border-radius: 12px; /* Softer corners */
+            padding: 0.75rem; /* Larger tap target */
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         input:not([type="checkbox"]):not([type="radio"]):focus, select:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 2px var(--primary);
+            box-shadow: 0 0 0 3px var(--primary), 0 0 10px rgba(92, 107, 192, 0.3); /* Softer, broader focus ring */
         }
-
+        
         /* Premium Card Depth */
         .card {
             background-color: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 1rem; /* Rounded corners for modern feel */
-            /* Subtle default shadow + a hover lift for premium feel */
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05); 
+            border-radius: 1.5rem; /* Large, bubbly corners */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.1);
             transition: box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
         .card:hover {
             box-shadow: var(--shadow-glow);
-            transform: translateY(-4px);
-        }
-        /* Override hover for the Quick Add bar which is fixed-style */
-        #quick-add-bar:hover {
-             box-shadow: none;
-             transform: none;
+            transform: translateY(-4px) scale(1.005);
         }
         
-        /* Tab Transitions */
+        /* Override hover for fixed bars */
+        #quick-add-bar:hover, #main-header:hover, #main-nav:hover {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            transform: none;
+        }
+
+        /* Tab Transitions - iOS-style segmented bar effect */
         .tab-btn {
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             color: var(--text-secondary);
+            padding: 10px 16px; /* Increased padding */
+            font-weight: 500;
+            border-radius: 12px 12px 0 0; /* Slightly rounded top corners */
+            position: relative;
+            z-index: 10;
         }
         .tab-btn.active {
-            border-bottom-width: 4px; /* Thicker active line */
-            border-color: var(--primary);
+            border-bottom: 4px solid var(--primary);
             color: var(--primary);
             font-weight: 700;
         }
         .tab-btn:hover {
             color: var(--primary);
+            background-color: var(--bg-card);
         }
         
-        /* Smoother Tab Content Transition (Mobile-First: Absolute positioning for smooth transitions) */
+        /* Smoother Tab Content Transition */
         .tab-content {
-            transition: opacity 0.4s ease, transform 0.4s ease;
-            position: absolute; /* Ensures all tabs start at the same vertical position */
+            transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: absolute;
             width: 100%;
             top: 0;
         }
@@ -110,30 +117,34 @@
             opacity: 0;
             height: 0;
             overflow: hidden;
-            transform: translateY(10px); 
-            position: absolute; /* Maintain absolute positioning for smooth return */
+            transform: translateY(20px); /* Larger slide for smoother feel */
+            pointer-events: none;
         }
         .tab-content:not(.hidden) {
-            position: relative; /* Only active tab should take up space */
+            position: relative;
             transform: translateY(0);
             opacity: 1;
             height: auto;
+            pointer-events: auto;
         }
 
-        /* Modal Backdrop */
+        /* Modal Backdrop (Glassmorphism Effect) */
         .modal-backdrop {
             background-color: var(--modal-bg);
-            backdrop-filter: blur(12px); /* Stronger blur for modern look */
+            backdrop-filter: blur(24px); /* Stronger, more iOS-like blur */
         }
         /* Modal Content Card */
         #item-modal .card, #confirm-modal .card {
-             background-color: var(--bg-modal-content); /* Use a consistent background */
-             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9); /* Very high contrast shadow */
+             /* Use content background for slightly better contrast against blurred backdrop */
+            background-color: var(--bg-modal-content); 
+            border: 1px solid var(--border-color);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.05) inset; /* Deep shadow with subtle inner highlight */
+            border-radius: 2rem; /* Very rounded for a soft, bubbly feel */
         }
         
-        /* Custom input file styling for cleaner look */
+        /* Custom file input styling */
         input[type="file"]::-webkit-file-upload-button {
-            border-radius: 9999px; 
+            border-radius: 9999px;
             padding: 0.5rem 1rem;
             border: none;
             background-color: var(--primary);
@@ -145,14 +156,14 @@
 
         /* Status Icon Size */
         .status-icon-lg {
-            width: 28px;
-            height: 28px;
+            width: 30px; /* Slightly larger */
+            height: 30px;
             margin-right: 12px;
         }
 
         /* Gradient Header Text - Thicker gradient for impact */
         .gradient-text {
-            background-image: linear-gradient(90deg, var(--primary), #3b82f6);
+            background-image: linear-gradient(90deg, var(--primary), #81d4fa); /* Primary to a soft light blue */
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -161,7 +172,7 @@
         @keyframes fadeInSlideUp {
             from {
                 opacity: 0;
-                transform: translateY(30px) scale(0.98); /* Start lower and slightly smaller */
+                transform: translateY(40px) scale(0.95); /* Start lower and slightly smaller */
             }
             to {
                 opacity: 1;
@@ -169,13 +180,13 @@
             }
         }
         .item-card-entry {
-            animation: fadeInSlideUp 0.6s cubic-bezier(0.215, 0.610, 0.355, 1.000) both; /* Smoother easing function */
+            animation: fadeInSlideUp 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; /* Smoother easing function, longer duration */
         }
         
         /* Pulse effect for EXPIRED/Expiring Soon status */
         @keyframes pulse-status {
             0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+            50% { opacity: 0.8; }
         }
         .animate-pulse-status {
             animation: pulse-status 1.5s infinite;
@@ -185,80 +196,80 @@
         #fab-button {
             position: fixed;
             bottom: 24px;
-            right: 24px;
+            right: 50%; /* Center on mobile */
+            transform: translateX(50%);
             z-index: 50;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            box-shadow: 0 15px 30px rgba(79, 70, 229, 0.8); /* Deeper primary shadow */
+            transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            /* Soft, deep shadow matching the iOS button depth */
+            box-shadow: 0 15px 30px rgba(92, 107, 192, 0.8); 
         }
         #fab-button.hidden {
             opacity: 0;
-            transform: scale(0.6) rotate(90deg); /* Rotate out for a better effect */
+            transform: translateX(50%) scale(0.7) rotate(90deg);
             pointer-events: none;
         }
 
-        /* Segmented Control Styling - MOBILE FIX (Larger buttons for tap targets) */
+        /* Segmented Control Styling - Bubbly/IOS */
         .segmented-control {
-            background-color: var(--bg-main);
-            border: 2px solid var(--primary);
-            border-radius: 16px; /* Larger radius */
-            padding: 4px; /* More padding */
-            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
+            background-color: var(--input-bg); /* Use input background for the track */
+            border: 1px solid var(--border-color);
+            border-radius: 18px; /* Larger radius for a "pill" look */
+            padding: 4px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
         }
         .segmented-btn {
             background-color: transparent;
             color: var(--text-secondary);
-            padding: 12px 10px; /* Increased padding for easy mobile tapping */
+            padding: 10px 14px; /* Optimized padding for touch */
             font-weight: 600;
             transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            font-size: 0.9rem; /* Slightly larger font size for readability */
+            font-size: 0.875rem; /* Standard mobile font size */
         }
         .segmented-btn.active {
             background-color: var(--primary);
             color: white;
             font-weight: 700;
-            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.5);
-            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(92, 107, 192, 0.5);
+            border-radius: 14px; /* Inner active pill radius */
         }
 
         /* --- FIXED HEADER/NAV STYLES --- */
-        /* Note: For fixed headers on mobile, keeping them concise is key. */
+        /* Fixed Header (iOS Large Title Style) */
         #main-header {
-            position: fixed;
+            position: sticky; /* Sticky instead of Fixed for scroll-collapse effect (if we added it), but keeping fixed properties on it for now */
             top: 0;
             left: 0;
             right: 0;
-            z-index: 50; 
+            z-index: 50;
             background-color: var(--bg-main);
-            /* Removed border-bottom for cleaner look, relying on shadow below */
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Subtle fixed header shadow */
-            padding-left: 1rem; /* Adjust padding for mobile (p-4) */
+            /* Subtle backdrop filter for a layered look */
+            backdrop-filter: blur(10px); 
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+            padding-left: 1rem;
             padding-right: 1rem;
             max-width: 100%;
         }
         /* Fixed Tabs - Positioned right below the header */
         #main-nav {
-            position: fixed;
-            top: 76px; /* Adjust based on header height (approx 76px after reducing header padding) */
+            position: sticky;
+            top: 72px; /* Adjusted based on header height (approx 72px after reducing header padding) */
             left: 0;
             right: 0;
-            z-index: 40; 
+            z-index: 40;
             background-color: var(--bg-main);
+            backdrop-filter: blur(10px); 
             border-bottom: 1px solid var(--border-color);
             padding-left: 1rem;
             padding-right: 1rem;
             max-width: 100%;
-            overflow-x: auto; /* Allow horizontal scroll on small screens if too many tabs */
-            -webkit-overflow-scrolling: touch; /* iOS scroll behavior */
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
             white-space: nowrap;
-        }
-        /* Tab Container Padding fix for mobile scrolling */
-        #main-nav > .flex {
-            padding-bottom: 0; /* Remove vertical padding from the flex container */
         }
 
         /* Offset main content to prevent it from hiding under fixed header/nav */
         #app-container {
-            padding-top: 135px; /* Adjusted: Header (76px) + Nav (50px) + Gap (10px) approx. */
+            padding-top: 130px; /* Adjusted: Header + Nav + Gap approx. */
             max-width: 7xl;
             margin-left: auto;
             margin-right: auto;
@@ -267,31 +278,32 @@
         /* Mobile Specific Adjustments */
         @media (max-width: 768px) {
              #main-header {
-                padding-left: 1rem;
-                padding-right: 1rem;
+                padding-top: 1rem;
+                padding-bottom: 0.75rem; /* Smaller padding for a more compact fixed header */
              }
              #main-nav {
+                top: 68px; /* Match new compact header height */
+                padding-left: 0.5rem; /* Slightly less padding to maximize horizontal space */
+                padding-right: 0.5rem;
+             }
+             #app-container {
+                padding-top: 120px; /* Re-adjust content offset for smaller header/nav */
                 padding-left: 1rem;
                 padding-right: 1rem;
              }
-             #app-container {
-                 padding-top: 135px; 
-                 padding-left: 1rem; /* Adjust content padding for smaller screens */
-                 padding-right: 1rem;
-             }
              .segmented-btn {
-                font-size: 0.75rem; /* Re-apply smaller font for smaller controls */
-                padding: 10px 4px;
+                font-size: 0.7rem;
+                padding: 8px 6px; /* Optimized padding for small segmented controls */
              }
              .tab-btn {
-                 font-size: 1rem; /* Keep tabs legible */
-                 padding-left: 0.5rem;
-                 padding-right: 0.5rem;
+                font-size: 0.9rem;
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
              }
-             /* Center the FAB on smaller screens for easier thumb access */
              #fab-button {
                  right: 50%;
                  transform: translateX(50%);
+                 bottom: 24px;
              }
              #fab-button.hidden {
                  transform: translateX(50%) scale(0.6) rotate(90deg);
@@ -304,10 +316,10 @@
             theme: {
                 extend: {
                     colors: {
-                        'primary': '#4f46e5', // Indigo-600
-                        'accent': '#047857', // Emerald-700
-                        'danger': '#ef4444', // Red-500
-                        'warning': '#fb923c', // Orange-400
+                        'primary': '#5c6bc0',
+                        'accent': '#00897b',
+                        'danger': '#ef5350',
+                        'warning': '#ffb300',
                         'deep-bg': '#0c0d16',
                     },
                     fontFamily: {
@@ -333,11 +345,11 @@
     </header>
 
     <nav id="main-nav" class="transition-colors duration-500">
-        <div class="flex space-x-4">
-            <button data-tab="Pantry" class="tab-btn pb-3 px-3 active">Pantry</button>
-            <button data-tab="Fridge" class="tab-btn pb-3 px-3">Fridge</button>
-            <button data-tab="Freezer" class="tab-btn pb-3 px-3">Freezer</button>
-            <button data-tab="User" class="tab-btn pb-3 px-3 flex items-center">
+        <div class="flex space-x-2 md:space-x-4 justify-start overflow-x-auto whitespace-nowrap py-3">
+            <button data-tab="Pantry" class="tab-btn px-3 active">Pantry</button>
+            <button data-tab="Fridge" class="tab-btn px-3">Fridge</button>
+            <button data-tab="Freezer" class="tab-btn px-3">Freezer</button>
+            <button data-tab="User" class="tab-btn px-3 flex items-center">
                 <i data-lucide="layout-dashboard" class="w-4 h-4 mr-1"></i> Dashboard
             </button>
         </div>
@@ -347,35 +359,35 @@
 <div id="app-container" class="p-0 md:p-8"> 
     <div id="app" class="max-w-7xl mx-auto">
         
-        <div id="quick-add-bar" class="card p-4 rounded-xl mb-6 flex flex-col md:flex-row gap-4 items-center transition-all duration-300 border-l-4 border-primary/50">
-            <div class="flex-shrink-0 text-primary font-bold flex items-center text-lg uppercase w-full md:w-auto">
-                <i data-lucide="package-plus" class="w-5 h-5 mr-3"></i> Quick Entry
+        <div id="quick-add-bar" class="card p-4 rounded-3xl mb-6 flex flex-col md:flex-row gap-4 items-center transition-all duration-300 border-l-8 border-primary/70">
+            <div class="flex-shrink-0 text-primary font-extrabold flex items-center text-lg uppercase w-full md:w-auto">
+                <i data-lucide="package-plus" class="w-6 h-6 mr-3"></i> Quick Entry
             </div>
-            <input type="text" id="quick-add-name" placeholder="Item Name (e.g., Organic Milk)" class="quick-add-input p-3 rounded-xl flex-grow text-base">
-            <select id="quick-add-location" class="p-3 rounded-xl w-full md:w-48 text-base">
+            <input type="text" id="quick-add-name" placeholder="Item Name (e.g., Organic Milk)" class="quick-add-input p-3 rounded-xl flex-grow text-base shadow-inner">
+            <select id="quick-add-location" class="p-3 rounded-xl w-full md:w-48 text-base shadow-inner">
                 <option value="Fridge">Fridge</option>
                 <option value="Pantry">Pantry</option>
                 <option value="Freezer">Freezer</option>
             </select>
-            <button onclick="quickAddItem()" class="bg-primary hover:bg-indigo-700 text-white p-3 rounded-xl flex items-center justify-center transition duration-300 w-full md:w-auto font-semibold shadow-lg shadow-primary/50">
-                <i data-lucide="plus" class="w-5 h-5 mr-1"></i> Details
+            <button onclick="quickAddItem()" class="bg-primary hover:bg-indigo-600 text-white p-4 rounded-2xl flex items-center justify-center transition duration-300 w-full md:w-auto font-bold shadow-lg shadow-primary/60 transform hover:scale-[1.02]">
+                <i data-lucide="plus" class="w-5 h-5 mr-1"></i> Add Details
             </button>
         </div>
 
-        <div id="warning-banner" class="hidden p-5 mb-6 rounded-xl bg-red-800/20 text-red-300 border border-red-700/50 shadow-2xl transition-all duration-500 border-l-8 border-danger">
+        <div id="warning-banner" class="hidden p-5 mb-6 rounded-3xl bg-red-800/20 text-red-300 border border-red-700/50 shadow-2xl transition-all duration-500 border-l-8 border-danger">
             <div class="font-extrabold flex items-center text-xl">
                 <i data-lucide="alert-triangle" class="w-7 h-7 mr-3 text-red-400 animate-pulse"></i> CRITICAL ALERT
             </div>
             <p class="text-sm mt-1 mb-3 text-red-400">The following items require immediate attention:</p>
-            <ul id="warning-list" class="space-y-1 list-disc list-inside text-sm"></ul>
+            <ul id="warning-list" class="space-y-1 list-disc list-inside text-sm font-medium"></ul>
         </div>
 
         <div id="content-wrapper" class="relative min-h-[500px] overflow-hidden">
 
             <div id="Pantry" class="tab-content transition-all duration-500">
                 <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-6">
-                    <input type="text" id="Pantry-search" placeholder="Dynamic Search (Name/Brand)..." class="p-3 rounded-xl flex-grow text-base">
-                    <select id="Pantry-sort" class="p-3 rounded-xl w-full md:w-48 text-sm">
+                    <input type="text" id="Pantry-search" placeholder="Dynamic Search (Name/Brand)..." class="p-3 rounded-xl flex-grow text-base shadow-inner">
+                    <select id="Pantry-sort" class="p-3 rounded-xl w-full md:w-48 text-sm shadow-inner">
                         <option value="date-asc">Best By Date Soonest</option>
                         <option value="name-asc">A-Z Name</option>
                         <option value="name-desc">Z-A Name</option>
@@ -390,8 +402,8 @@
 
             <div id="Fridge" class="tab-content hidden absolute w-full top-0 transition-all duration-500">
                 <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-6">
-                    <input type="text" id="Fridge-search" placeholder="Dynamic Search (Name/Brand)..." class="p-3 rounded-xl flex-grow text-base">
-                    <select id="Fridge-sort" class="p-3 rounded-xl w-full md:w-48 text-sm">
+                    <input type="text" id="Fridge-search" placeholder="Dynamic Search (Name/Brand)..." class="p-3 rounded-xl flex-grow text-base shadow-inner">
+                    <select id="Fridge-sort" class="p-3 rounded-xl w-full md:w-48 text-sm shadow-inner">
                         <option value="date-asc">Best By Date Soonest</option>
                         <option value="name-asc">A-Z Name</option>
                         <option value="name-desc">Z-A Name</option>
@@ -405,8 +417,8 @@
 
             <div id="Freezer" class="tab-content hidden absolute w-full top-0 transition-all duration-500">
                 <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-6">
-                    <input type="text" id="Freezer-search" placeholder="Dynamic Search (Name/Brand)..." class="p-3 rounded-xl flex-grow text-base">
-                    <select id="Freezer-sort" class="p-3 rounded-xl w-full md:w-48 text-sm">
+                    <input type="text" id="Freezer-search" placeholder="Dynamic Search (Name/Brand)..." class="p-3 rounded-xl flex-grow text-base shadow-inner">
+                    <select id="Freezer-sort" class="p-3 rounded-xl w-full md:w-48 text-sm shadow-inner">
                         <option value="date-asc">Best By Date Soonest</option>
                         <option value="name-asc">A-Z Name</option>
                         <option value="name-desc">Z-A Name</option>
@@ -419,46 +431,46 @@
             </div>
 
             <div id="User" class="tab-content hidden absolute w-full top-0 transition-all duration-500">
-                <h2 class="text-3xl font-extrabold mb-8 text-primary border-b border-[var(--border-color)] pb-3 flex items-center">
+                <h2 class="text-3xl font-extrabold mb-8 text-primary border-b-4 border-[var(--border-color)] pb-3 flex items-center">
                     <i data-lucide="line-chart" class="w-7 h-7 mr-3"></i> System Dashboard & Analytics
                 </h2>
                 
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <div class="card stat-card p-5 rounded-xl text-center shadow-lg hover:shadow-primary/70 transition-shadow duration-300 border-l-4 border-primary">
+                    <div class="card stat-card p-5 rounded-3xl text-center shadow-lg hover:shadow-primary/70 transition-shadow duration-300 border-l-8 border-primary/80">
                         <p class="text-xs uppercase font-semibold text-[var(--text-secondary)] mb-1">Total Items</p>
-                        <p class="text-3xl font-extrabold text-primary transition-colors duration-500" id="total-items">0</p>
+                        <p class="text-4xl font-extrabold text-primary transition-colors duration-500" id="total-items">0</p>
                     </div>
-                    <div class="card stat-card p-5 rounded-xl text-center shadow-lg hover:shadow-warning/70 transition-shadow duration-300 border-l-4 border-warning">
+                    <div class="card stat-card p-5 rounded-3xl text-center shadow-lg hover:shadow-warning/70 transition-shadow duration-300 border-l-8 border-warning/80">
                         <p class="text-xs uppercase font-semibold text-warning mb-1">Pantry Count</p>
-                        <p class="text-3xl font-extrabold text-warning transition-colors duration-500" id="pantry-count">0</p>
+                        <p class="text-4xl font-extrabold text-warning transition-colors duration-500" id="pantry-count">0</p>
                     </div>
-                    <div class="card stat-card p-5 rounded-xl text-center shadow-lg hover:shadow-primary/70 transition-shadow duration-300 border-l-4 border-sky-500">
+                    <div class="card stat-card p-5 rounded-3xl text-center shadow-lg hover:shadow-primary/70 transition-shadow duration-300 border-l-8 border-sky-500/80">
                         <p class="text-xs uppercase font-semibold text-sky-500 mb-1">Fridge Count</p>
-                        <p class="text-3xl font-extrabold text-sky-500 transition-colors duration-500" id="fridge-count">0</p>
+                        <p class="text-4xl font-extrabold text-sky-500 transition-colors duration-500" id="fridge-count">0</p>
                     </div>
-                    <div class="card stat-card p-5 rounded-xl text-center shadow-lg hover:shadow-accent/70 transition-shadow duration-300 border-l-4 border-teal-500">
+                    <div class="card stat-card p-5 rounded-3xl text-center shadow-lg hover:shadow-accent/70 transition-shadow duration-300 border-l-8 border-teal-500/80">
                         <p class="text-xs uppercase font-semibold text-teal-500 mb-1">Freezer Count</p>
-                        <p class="text-3xl font-extrabold text-teal-500 transition-colors duration-500" id="freezer-count">0</p>
+                        <p class="text-4xl font-extrabold text-teal-500 transition-colors duration-500" id="freezer-count">0</p>
                     </div>
                 </div>
 
-                <div class="card p-6 rounded-xl mb-8 shadow-2xl border-l-4 border-accent">
+                <div class="card p-6 rounded-3xl mb-8 shadow-2xl border-l-8 border-accent/80">
                     <h3 class="text-xl font-bold mb-4 flex items-center border-b pb-2 border-[var(--border-color)]">
-                        <i data-lucide="wallet" class="w-5 h-5 mr-3 text-accent"></i> Financial Tracking
+                        <i data-lucide="wallet" class="w-6 h-6 mr-3 text-accent"></i> Financial Tracking
                     </h3>
                     
                     <div class="flex justify-center mb-6">
                         <div id="spending-period-segmented" class="segmented-control flex w-full max-w-lg shadow-inner">
-                            <button data-period="week" onclick="fetchSpendingStats('week')" class="segmented-btn flex-1 text-sm rounded-l-xl">Week</button>
-                            <button data-period="month" onclick="fetchSpendingStats('month')" class="segmented-btn flex-1 text-sm">Month</button>
-                            <button data-period="year" onclick="fetchSpendingStats('year')" class="segmented-btn flex-1 text-sm">Year</button>
-                            <button data-period="all" onclick="fetchSpendingStats('all')" class="segmented-btn flex-1 active text-sm">All Time</button>
-                            <button data-period="annual" onclick="fetchSpendingStats('annual')" class="segmented-btn flex-1 rounded-r-xl text-sm">Annual</button>
+                            <button data-period="week" onclick="fetchSpendingStats('week')" class="segmented-btn flex-1">Week</button>
+                            <button data-period="month" onclick="fetchSpendingStats('month')" class="segmented-btn flex-1">Month</button>
+                            <button data-period="year" onclick="fetchSpendingStats('year')" class="segmented-btn flex-1">Year</button>
+                            <button data-period="all" onclick="fetchSpendingStats('all')" class="segmented-btn flex-1 active">All Time</button>
+                            <button data-period="annual" onclick="fetchSpendingStats('annual')" class="segmented-btn flex-1">Annual</button>
                         </div>
                     </div>
 
                     <div id="spending-main-display">
-                        <div class="flex flex-col sm:flex-row justify-between items-center mb-6 p-5 bg-accent/30 rounded-xl border border-dashed border-accent">
+                        <div class="flex flex-col sm:flex-row justify-between items-center mb-6 p-5 bg-accent/30 rounded-2xl border-2 border-dashed border-accent/70">
                             <p class="text-lg font-bold">Total Spent (<span id="spending-period-label">All Time</span>):</p>
                             <p class="text-4xl font-extrabold text-accent" id="total-spent">$0.00</p>
                         </div>
@@ -487,7 +499,7 @@
                     </div>
 
                     <div id="annual-spending-display" class="hidden">
-                        <h4 class="text-lg font-semibold mb-3">Spending Per Year</h4>
+                        <h4 class="text-lg font-bold mb-3">Spending Per Year</h4>
                         <table class="min-w-full divide-y divide-[var(--border-color)] rounded-xl overflow-hidden">
                             <thead class="bg-[var(--bg-main)]/50">
                                 <tr>
@@ -501,27 +513,27 @@
                     </div>
                 </div>
 
-                <div class="card p-6 rounded-xl mb-8 shadow-2xl border-l-4 border-primary">
+                <div class="card p-6 rounded-3xl mb-8 shadow-2xl border-l-8 border-primary/80">
                     <h3 class="text-xl font-bold mb-4 flex items-center border-b pb-2 border-[var(--border-color)]">
-                        <i data-lucide="trending-up" class="w-5 h-5 mr-3 text-primary"></i> Price Change Calculator
+                        <i data-lucide="trending-up" class="w-6 h-6 mr-3 text-primary"></i> Price Change Calculator
                     </h3>
                     
                     <div class="space-y-4 mb-6">
-                        <select id="price-tracker-item" class="p-3 rounded-xl w-full text-sm">
+                        <select id="price-tracker-item" class="p-4 rounded-xl w-full text-base shadow-inner">
                             <option value="">Select Item to Track...</option>
                         </select>
                         
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <input type="date" id="price-tracker-start-date" class="p-3 rounded-xl w-full text-base" title="Start Date">
-                            <input type="date" id="price-tracker-end-date" class="p-3 rounded-xl w-full text-base" title="End Date">
+                            <input type="date" id="price-tracker-start-date" class="p-4 rounded-xl w-full text-base shadow-inner" title="Start Date">
+                            <input type="date" id="price-tracker-end-date" class="p-4 rounded-xl w-full text-base shadow-inner" title="End Date">
                         </div>
                         
-                        <button onclick="calculatePriceDifference()" class="w-full bg-primary hover:bg-indigo-700 text-white p-3 rounded-xl transition duration-300 font-semibold shadow-lg shadow-primary/50 flex items-center justify-center">
+                        <button onclick="calculatePriceDifference()" class="w-full bg-primary hover:bg-indigo-600 text-white p-4 rounded-2xl transition duration-300 font-bold shadow-lg shadow-primary/60 flex items-center justify-center transform hover:scale-[1.01]">
                             <i data-lucide="calculator" class="w-5 h-5 mr-2"></i> Calculate Price Difference
                         </button>
                     </div>
 
-                    <div id="price-result-display" class="p-5 rounded-xl border border-dashed border-[var(--border-color)] text-center transition-all duration-300 min-h-[100px] flex items-center justify-center">
+                    <div id="price-result-display" class="p-6 rounded-2xl border-2 border-dashed border-[var(--border-color)] text-center transition-all duration-300 min-h-[100px] flex flex-col items-center justify-center">
                         <p id="price-result-message" class="text-base text-[var(--text-secondary)]">
                             Select an item and two dates to see how its price has changed.
                         </p>
@@ -530,19 +542,19 @@
 
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div class="card p-6 rounded-xl shadow-2xl border-l-4 border-danger">
+                    <div class="card p-6 rounded-3xl shadow-2xl border-l-8 border-danger/80">
                         <h3 class="text-xl font-bold mb-4 flex items-center border-b pb-2 border-[var(--border-color)]">
-                            <i data-lucide="bell-ring" class="w-5 h-5 mr-3 text-danger"></i> Urgent Notifications
+                            <i data-lucide="bell-ring" class="w-6 h-6 mr-3 text-danger"></i> Urgent Notifications
                         </h3>
                         <div id="active-reminders" class="space-y-3">
                             <p class="text-[var(--text-secondary)] text-sm">No active notifications.</p>
                         </div>
                     </div>
 
-                    <div class="card p-6 rounded-xl shadow-2xl border-l-4 border-primary">
+                    <div class="card p-6 rounded-3xl shadow-2xl border-l-8 border-primary/80">
                         <h3 class="text-xl font-bold mb-4 flex items-center justify-between border-b pb-2 border-[var(--border-color)]">
-                            <span class="flex items-center"><i data-lucide="clock-history" class="w-5 h-5 mr-3 text-primary"></i> Closed History</span>
-                            <button onclick="clearClosedHistory()" class="text-xs text-danger hover:text-red-400 font-medium flex items-center transition duration-150 p-2 rounded-lg bg-red-900/30">
+                            <span class="flex items-center"><i data-lucide="clock-history" class="w-6 h-6 mr-3 text-primary"></i> Closed History</span>
+                            <button onclick="clearClosedHistory()" class="text-xs text-danger hover:text-red-400 font-bold flex items-center transition duration-150 p-2 rounded-xl bg-red-900/30">
                                 <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i> Clear All
                             </button>
                         </h3>
@@ -558,14 +570,14 @@
     <div class="h-20 md:h-8"></div> 
 </div>
 
-<button id="fab-button" onclick="openFormModal('Fridge', null, '')" class="hidden bg-primary text-white p-5 rounded-full shadow-lg hover:bg-indigo-700 transition duration-300">
+<button id="fab-button" onclick="openFormModal('Fridge', null, '')" class="hidden bg-primary text-white p-5 rounded-full shadow-lg hover:bg-indigo-600 transition duration-300 transform hover:scale-105">
     <i data-lucide="plus" class="w-7 h-7"></i>
 </button>
 
 <div id="item-modal" class="hidden fixed inset-0 z-50 overflow-y-auto modal-backdrop transition-opacity duration-500">
     <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="card w-full max-w-lg rounded-xl shadow-3xl p-6 md:p-8 relative transform transition-transform duration-500 scale-95 opacity-0">
-            <button onclick="closeFormModal()" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-danger transition duration-300">
+        <div class="card w-full max-w-lg rounded-2xl shadow-3xl p-6 md:p-8 relative transform transition-transform duration-500 scale-95 opacity-0">
+            <button onclick="closeFormModal()" class="absolute top-4 right-4 p-3 text-gray-400 hover:text-danger transition duration-300 rounded-full bg-[var(--bg-main)]/50 hover:bg-[var(--bg-main)]/80">
                 <i data-lucide="x" class="w-6 h-6"></i>
             </button>
             <h2 id="modal-title" class="text-2xl font-bold mb-6 text-primary border-b border-[var(--border-color)] pb-2">Add New Item</h2>
@@ -603,20 +615,20 @@
 
                 <div class="mb-6">
                     <label for="item-image" class="block text-sm font-medium mb-2 text-[var(--text-secondary)]">Item Picture (Optional)</label>
-                    <input type="file" id="item-image" name="image" accept="image/*,.heic,.heif" class="w-full text-sm text-[var(--text-secondary)] file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-indigo-700">
-                    <div id="image-preview-container" class="mt-3 flex flex-col items-start space-y-3 hidden">
+                    <input type="file" id="item-image" name="image" accept="image/*,.heic,.heif" class="w-full text-sm text-[var(--text-secondary)] file:mr-4 file:py-3 file:px-5 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-indigo-600">
+                    <div id="image-preview-container" class="mt-4 flex flex-col items-start space-y-3 hidden">
                         <img id="image-display" src="" alt="Image Preview" class="w-32 h-32 object-cover rounded-xl shadow-lg border border-[var(--border-color)]">
-                        <button type="button" onclick="removeImage()" class="text-danger hover:text-red-400 text-sm font-medium flex items-center transition duration-150">
+                        <button type="button" onclick="removeImage()" class="text-danger hover:text-red-400 text-sm font-bold flex items-center transition duration-150 p-2 rounded-lg bg-red-900/30">
                             <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i> Remove Current Image
                         </button>
                     </div>
                 </div>
 
-                <div id="modal-error" class="text-danger text-sm mb-4 hidden font-medium p-3 bg-red-900/30 rounded-xl border border-danger/50"></div>
+                <div id="modal-error" class="text-danger text-sm mb-4 hidden font-medium p-4 bg-red-900/30 rounded-xl border border-danger/50"></div>
 
                 <div class="flex justify-end space-x-3 pt-4 border-t border-[var(--border-color)]">
-                    <button type="button" onclick="closeFormModal()" class="px-5 py-3 border border-[var(--border-color)] rounded-xl text-[var(--text-main)] hover:bg-[var(--bg-card)]/50 transition duration-300 font-semibold">Cancel</button>
-                    <button type="submit" class="bg-primary hover:bg-indigo-700 text-white px-6 py-3 rounded-xl transition duration-300 font-semibold shadow-lg shadow-primary/50">Save Item</button>
+                    <button type="button" onclick="closeFormModal()" class="px-5 py-3 border border-[var(--border-color)] rounded-2xl text-[var(--text-main)] hover:bg-[var(--bg-card)]/50 transition duration-300 font-semibold shadow-inner">Cancel</button>
+                    <button type="submit" class="bg-primary hover:bg-indigo-600 text-white px-6 py-3 rounded-2xl transition duration-300 font-bold shadow-lg shadow-primary/60 transform hover:scale-105">Save Item</button>
                 </div>
             </form>
         </div>
@@ -625,14 +637,14 @@
 
 <div id="confirm-modal" class="hidden fixed inset-0 z-50 overflow-y-auto modal-backdrop transition-opacity duration-500">
     <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="card w-full max-w-sm rounded-xl shadow-3xl p-6 relative transform transition-transform duration-500 scale-95 opacity-0">
+        <div class="card w-full max-w-sm rounded-2xl shadow-3xl p-6 relative transform transition-transform duration-500 scale-95 opacity-0">
             <h3 class="text-xl font-bold mb-4 flex items-center text-danger">
                 <i data-lucide="alert-triangle" class="w-6 h-6 mr-2"></i> Confirm Action
             </h3>
             <p id="confirm-message" class="mb-6 text-[var(--text-main)]">Are you sure you want to proceed with this action?</p>
             <div class="flex justify-end space-x-3">
-                <button onclick="closeConfirmModal()" class="px-4 py-3 border border-[var(--border-color)] rounded-xl text-[var(--text-main)] hover:bg-[var(--bg-card)]/50 transition duration-300 font-semibold">Cancel</button>
-                <button id="confirm-action-btn" class="bg-danger hover:bg-red-700 text-white px-6 py-3 rounded-xl transition duration-300 font-semibold shadow-md">Confirm</button>
+                <button onclick="closeConfirmModal()" class="px-5 py-3 border border-[var(--border-color)] rounded-2xl text-[var(--text-main)] hover:bg-[var(--bg-card)]/50 transition duration-300 font-semibold shadow-inner">Cancel</button>
+                <button id="confirm-action-btn" class="bg-danger hover:bg-red-600 text-white px-6 py-3 rounded-2xl transition duration-300 font-bold shadow-lg shadow-danger/60">Confirm</button>
             </div>
         </div>
     </div>
@@ -786,7 +798,7 @@
         const bestByDate = item.best_by_date ? item.best_by_date.split('T')[0] : '';
         
         return `
-            <div class="card item-card-entry p-5 rounded-xl flex flex-col justify-between h-full border-l-8 ${status.border}" style="animation-delay: ${index * 0.05}s;">
+            <div class="card item-card-entry p-5 rounded-3xl flex flex-col justify-between h-full border-l-8 ${status.border}" style="animation-delay: ${index * 0.05}s;">
                 <div class="mb-4">
                     <img src="${imageUrl}" alt="${item.name}" class="item-image mb-4 h-40 object-cover rounded-xl transition duration-500 hover:scale-[1.03] w-full" onerror="this.onerror=null;this.src='https://placehold.co/400x160/181a29/94a3b8?text=NO+IMAGE';">
                     
@@ -809,16 +821,16 @@
                     </p>
                 </div>
                 
-                <div class="flex justify-start items-center pt-3 p-3 rounded-xl ${status.bg} border-l-4 ${status.border} mt-3">
+                <div class="flex justify-start items-center pt-3 p-3 rounded-2xl ${status.bg} border-l-4 ${status.border} mt-3">
                     <i data-lucide="${status.icon}" class="status-icon-lg ${status.color} ${status.pulse}"></i> 
                     <span class="${status.color} text-lg ${status.bold}">${status.text}</span>
                 </div>
 
                 <div class="flex space-x-3 mt-4">
-                    <button onclick="openFormModal('${item.location}', ${item.id})" class="flex-1 bg-primary/20 text-primary p-3 rounded-xl text-sm hover:bg-primary/50 transition duration-300 flex items-center justify-center font-semibold">
+                    <button onclick="openFormModal('${item.location}', ${item.id})" class="flex-1 bg-primary/20 text-primary p-3 rounded-2xl text-sm hover:bg-primary/50 transition duration-300 flex items-center justify-center font-semibold transform hover:scale-[1.01]">
                         <i data-lucide="edit-3" class="w-4 h-4 mr-1"></i> Edit
                     </button>
-                    <button onclick="openConfirmModal('toss', ${item.id}, '${item.name}')" class="flex-1 bg-danger/20 text-danger p-3 rounded-xl text-sm hover:bg-danger/50 transition duration-300 flex items-center justify-center font-semibold">
+                    <button onclick="openConfirmModal('toss', ${item.id}, '${item.name}')" class="flex-1 bg-danger/20 text-danger p-3 rounded-2xl text-sm hover:bg-danger/50 transition duration-300 flex items-center justify-center font-semibold transform hover:scale-[1.01]">
                         <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i> Toss
                     </button>
                 </div>
@@ -837,7 +849,7 @@
 
         // Previous button
         paginationHtml += `<button onclick="changePage('${location}', ${currentPage[location] - 1})" 
-                            class="p-3 border border-[var(--border-color)] rounded-l-xl hover:bg-primary/30 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-[var(--text-main)]" 
+                            class="p-3 border border-[var(--border-color)] rounded-l-2xl hover:bg-primary/30 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-[var(--text-main)]" 
                             ${currentPage[location] === 1 ? 'disabled' : ''}>
                             <i data-lucide="chevron-left" class="w-5 h-5"></i>
                            </button>`;
@@ -868,12 +880,12 @@
 
         // Next button
         paginationHtml += `<button onclick="changePage('${location}', ${currentPage[location] + 1})" 
-                            class="p-3 border border-[var(--border-color)] rounded-r-xl hover:bg-primary/30 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-[var(--text-main)]" 
+                            class="p-3 border border-[var(--border-color)] rounded-r-2xl hover:bg-primary/30 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-[var(--text-main)]" 
                             ${currentPage[location] === totalPages ? 'disabled' : ''}>
                             <i data-lucide="chevron-right" class="w-5 h-5"></i>
                            </button>`;
 
-        paginationContainer.innerHTML = `<div class="flex rounded-xl overflow-hidden shadow-lg">${paginationHtml}</div>`;
+        paginationContainer.innerHTML = `<div class="flex rounded-2xl overflow-hidden shadow-lg">${paginationHtml}</div>`;
         lucide.createIcons();
     }
     
@@ -963,7 +975,7 @@
         }
 
         if (itemsToRender.length === 0) {
-            listContainer.innerHTML = `<p class="text-center py-10 text-[var(--text-secondary)] border-dashed border-2 border-[var(--border-color)] rounded-xl mt-6">No items found in ${location}. Use the Quick Entry bar above!</p>`;
+            listContainer.innerHTML = `<p class="text-center py-10 text-[var(--text-secondary)] border-dashed border-2 border-[var(--border-color)] rounded-xl mt-6">No items found in ${location}. Use the Quick Entry bar above or the '+' button!</p>`;
         } else {
             // Use index to apply staggered animation delay
             listContainer.innerHTML = itemsToRender.map((item, index) => renderItemCard(item, index)).join('');
@@ -1090,15 +1102,15 @@
         const messageElement = document.getElementById('price-result-message');
         
         if (isError) {
-            display.className = 'p-5 rounded-xl border border-dashed border-danger bg-danger/20 text-center transition-all duration-300 min-h-[100px] flex items-center justify-center';
+            display.className = 'p-6 rounded-2xl border-2 border-dashed border-danger bg-danger/20 text-center transition-all duration-300 min-h-[100px] flex flex-col items-center justify-center';
             messageElement.className = 'text-base font-medium text-danger';
         } else if (message.includes('increase') || message.includes('decrease')) {
             const isIncrease = message.includes('increase');
-             display.className = `p-5 rounded-xl border border-dashed ${isIncrease ? 'border-danger bg-danger/20' : 'border-accent bg-accent/20'} text-center transition-all duration-300 min-h-[100px] flex items-center justify-center`;
+             display.className = `p-6 rounded-2xl border-2 border-dashed ${isIncrease ? 'border-danger bg-danger/20' : 'border-accent bg-accent/20'} text-center transition-all duration-300 min-h-[100px] flex flex-col items-center justify-center`;
              messageElement.className = `text-xl font-extrabold ${isIncrease ? 'text-danger' : 'text-accent'}`;
         }
         else {
-             display.className = 'p-5 rounded-xl border border-dashed border-[var(--border-color)] text-center transition-all duration-300 min-h-[100px] flex items-center justify-center';
+             display.className = 'p-6 rounded-2xl border-2 border-dashed border-[var(--border-color)] text-center transition-all duration-300 min-h-[100px] flex flex-col items-center justify-center';
              messageElement.className = 'text-base text-[var(--text-secondary)]';
         }
         
@@ -1259,9 +1271,9 @@
                 
                 const closedHtml = data.closed.length > 0
                     ? data.closed.map(r => `
-                        <div class="text-xs text-[var(--text-secondary)] p-2 border-b border-[var(--border-color)] hover:bg-[var(--bg-card)]/50 transition duration-300 flex justify-between">
+                        <div class="text-sm text-[var(--text-secondary)] p-2 border-b border-[var(--border-color)] hover:bg-[var(--bg-card)]/50 transition duration-300 flex justify-between">
                             <span class="font-medium truncate">${r.message}</span> 
-                            <span class="flex-shrink-0 ml-2">${formatDate(r.created_at)}</span>
+                            <span class="flex-shrink-0 ml-2 text-xs">${formatDate(r.created_at)}</span>
                         </div>
                     `).join('')
                     : '<p class="text-[var(--text-secondary)] text-sm">No recent history.</p>';
@@ -1605,7 +1617,7 @@
                     // Start fade out and slide up on non-active tabs
                     if (content.id !== newTab) {
                         content.style.opacity = 0;
-                        content.style.transform = 'translateY(15px)';
+                        content.style.transform = 'translateY(20px)'; // Larger slide
                         // Use a timeout slightly shorter than the transition duration to add 'hidden'
                         setTimeout(() => content.classList.add('hidden'), 350); 
                     }
@@ -1616,7 +1628,7 @@
                     newTabContent.classList.remove('hidden');
                     // Ensure it's in the correct position for the slide-in animation to work
                     newTabContent.style.opacity = 0;
-                    newTabContent.style.transform = 'translateY(15px)';
+                    newTabContent.style.transform = 'translateY(20px)';
 
                     // Force reflow/re-render before starting the animation
                     newTabContent.offsetHeight; 
